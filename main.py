@@ -15,7 +15,7 @@ from util.input import user_input, Print
 from util.constants import TERMINAL_COLORS as COLORS
 
 def main():
-    Print.print_bold_magenta("Welcome to the Brainstem Orofacial Motor Behaviors program.")
+    Print.print_bold_magenta("\nWelcome to the Brainstem Orofacial Motor Behaviors program.\n")
 
     # Program loop
     while True:        

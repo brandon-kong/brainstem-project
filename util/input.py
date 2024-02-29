@@ -40,9 +40,10 @@ def list_input(message: str, choices: list[str]) -> int:
 
     print(COLORS.CYAN)
 
-    print(message)
+    print(message + "\n")
+
     for i, choice in enumerate(choices):
-        print(f"{i + 1}. {choice}")
+        print(f"\t{i + 1}. {choice}")
 
     print(COLORS.ENDC)
 
