@@ -9,33 +9,34 @@ Machine-Learning in Brainstem Orofacial Motor Behaviors.
 """
 
 # Imports
+import os
 import util.data
 from util.input import user_input
+from util.constants import TERMINAL_COLORS as COLORS
 
 def main():
-
+    print(f"\n{COLORS.BOLD_MAGENTA}Welcome to the Brainstem Orofacial Motor Behaviors program.{COLORS.ENDC}\n")
     # Program loop
 
-    while True:
-        print("Welcome to the Brainstem Orofacial Motor Behaviors program.")
-        print("Please choose from the following options:")
-        print("1. Load data")
-        print("2. Display data")
-        print("3. Cluster data")
-        print("4. Exit")
+    while True:        
+        print(f"Please choose from the following options:")
 
-        choice = user_input("text",
+        choice = user_input("list",
                             "Enter the number of your choice: ",
                             choices=["Perform K-Means", "Generate a Dataset", "Visualize a Dataset", "Exit"])
 
-        if choice == 1:
-            print("K-Means")
+        if choice == 1:            
+            print(f"{COLORS.BOLD_GREEN}K-Means{COLORS.ENDC}")
         elif choice == 2:
-            print("Generate a Dataset")
+            print(f"{COLORS.BOLD_GREEN}Generate a Dataset{COLORS.ENDC}")
         elif choice == 3:
-            print("Visualize a Dataset")
+            print(f"{COLORS.BOLD_GREEN}Visualize a Dataset{COLORS.ENDC}")
         elif choice == 4:
-            process.exit(0)
+            print(f"{COLORS.BOLD_RED}Exiting the program.{COLORS.ENDC}\n")
+            break
+        
+        print()
+
 
 
 

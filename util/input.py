@@ -9,6 +9,7 @@ the user.
 
 # Imports
 
+from .constants import TERMINAL_COLORS as COLORS
 from typing import Optional, List
 
 
@@ -37,23 +38,33 @@ def list_input(message: str, choices: list[str]) -> int:
     :return:
     """
 
+    print(COLORS.CYAN)
+
     print(message)
     for i, choice in enumerate(choices):
         print(f"{i + 1}. {choice}")
 
+    print(COLORS.ENDC)
+
     choice = input("Enter the number of your choice: ")
 
+    print()
+    
     try:
         # handle 0-based index
 
         if int(choice) == 0:
             raise ValueError
 
-        return int(choice) - 1
+        return int(choice)
+    
     except (ValueError, IndexError):
         print("Invalid choice. Please try again.")
-        return list_input(message, choices)
+        print(COLORS.ENDC)
 
+        return list_input(message, choices)
+    
+    
 
 def text_input(message: str) -> str:
     """
