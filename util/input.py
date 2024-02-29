@@ -49,7 +49,7 @@ def list_input(message: str, choices: list[str]) -> int:
     choice = input("Enter the number of your choice: ")
 
     print()
-    
+
     try:
         # handle 0-based index
 
@@ -75,3 +75,59 @@ def text_input(message: str) -> str:
     """
 
     return input(message)
+
+class Print():
+    
+    def print_bold_magenta(message: str):
+        print(f"{COLORS.BOLD_MAGENTA}{message}{COLORS.ENDC}")
+
+    def print_bold_green(message: str):
+        print(f"{COLORS.BOLD_GREEN}{message}{COLORS.ENDC}")
+
+    def print_bold_red(message: str):
+        print(f"{COLORS.BOLD_RED}{message}{COLORS.ENDC}")
+
+    def print_bold_cyan(message: str):
+        print(f"{COLORS.BOLD_CYAN}{message}{COLORS.ENDC}")
+
+    def print_bold_yellow(message: str):
+        print(f"{COLORS.BOLD_YELLOW}{message}{COLORS.ENDC}")
+
+    def print_bold_blue(message: str):
+        print(f"{COLORS.BOLD_BLUE}{message}{COLORS.ENDC}")
+
+    def print_bold_white(message: str):
+        print(f"{COLORS.BOLD_WHITE}{message}{COLORS.ENDC}")
+
+    def print_bold_black(message: str):
+        print(f"{COLORS.BOLD_BLACK}{message}{COLORS.ENDC}")
+
+    def print_bold(message: str):
+        print(f"{COLORS.BOLD}{message}{COLORS.ENDC}")
+
+    def print_underline(message: str):
+        print(f"{COLORS.UNDERLINE}{message}{COLORS.ENDC}")
+
+    def print_black(message: str):
+        print(f"{COLORS.BLACK}{message}{COLORS.ENDC}")
+
+    def print_red(message: str):
+        print(f"{COLORS.RED}{message}{COLORS.ENDC}")
+
+    def print_green(message: str):
+        print(f"{COLORS.GREEN}{message}{COLORS.ENDC}")
+
+    def print_yellow(message: str):
+        print(f"{COLORS.YELLOW}{message}{COLORS.ENDC}")
+
+    def print_blue(message: str):
+        print(f"{COLORS.BLUE}{message}{COLORS.ENDC}")
+
+    def print_magenta(message: str):
+        print(f"{COLORS.MAGENTA}{message}{COLORS.ENDC}")
+
+    def print_cyan(message: str):
+        print(f"{COLORS.CYAN}{message}{COLORS.ENDC}")
+
+    def print_white(message: str):
+        print(f"{COLORS.WHITE}{message}{COLORS.ENDC}")
