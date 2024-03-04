@@ -14,6 +14,9 @@ import util.data
 from util.input import user_input, Print
 from util.constants import TERMINAL_COLORS as COLORS
 
+# Drivers for the program
+from drivers.visualization.main import Visualizer
+
 def main():
     print(Print.bold(Print.magenta("\nWelcome to the Brainstem Orofacial Motor Behaviors program.\n")))
 
@@ -32,7 +35,7 @@ def main():
         elif choice == 2:
             print(Print.bold(Print.green("Generate a Dataset")))
         elif choice == 3:
-            print(Print.bold(Print.green("Visualize a Dataset")))
+            Visualizer()
         elif choice == 4:
             print(Print.bold(Print.red("Exiting the program. Goodbye!")))
             break

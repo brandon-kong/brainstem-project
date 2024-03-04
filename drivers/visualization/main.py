@@ -18,18 +18,18 @@ class Visualizer:
     software = "matplotlib"
 
     def __init__(self):
-        pass
+        self.init()
 
     def init(self):
-        print(Print.bold(Print.green("Initializing the visualizer...")))
+        print(Print.bold(Print.green("\nInitializing the visualizer...\n")))
 
-        choice = None
+        choice: int | None = None
 
         while not choice:
             choice = user_input("list",
-                                "Please choose a visualization library: ",
+                                "Which visualization engine would you like to use: ",
                                 choices=engines)
 
-            software = engines[choice - 1]
+            self.software = engines[choice - 1]
 
         print(Print.bold(Print.green(f"Visualizer initialized with {self.software}.")))
