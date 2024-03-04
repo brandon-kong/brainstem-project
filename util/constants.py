@@ -8,6 +8,7 @@ application.
 
 CLUSTER_LABEL_COLUMN_PREFIX = "Cluster_"
 
+
 class TERMINAL_COLORS():
     ENDC = '\033[0m'
 

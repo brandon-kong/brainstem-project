@@ -38,21 +38,12 @@ def list_input(message: str, choices: list[str]) -> int:
     :return:
     """
 
-    print(COLORS.CYAN)
-
-    print(message + "\n")
-
     for i, choice in enumerate(choices):
-        print(f"\t{i + 1}. {choice}")
-
-    print(COLORS.ENDC)
-
-    choice = input("Enter the number of your choice: ")
-
-    print()
+        print(Print.cyan(f"\t{i + 1}. {choice}"))
 
     try:
         # handle 0-based index
+        choice = input(message)
 
         if int(choice) == 0:
             raise ValueError
@@ -60,8 +51,7 @@ def list_input(message: str, choices: list[str]) -> int:
         return int(choice)
     
     except (ValueError, IndexError):
-        print("Invalid choice. Please try again.")
-        print(COLORS.ENDC)
+        print(Print.bold(Print.red("\nInvalid choice. Please try again.\n")))
 
         return list_input(message, choices)
     
@@ -77,58 +67,33 @@ def text_input(message: str) -> str:
 
     return input(message)
 
-class Print():
-    
-    def print_bold_magenta(message: str):
-        print(f"{COLORS.BOLD_MAGENTA}{message}{COLORS.ENDC}")
+class Print:
+    def bold(message: str):
+        return f"{COLORS.BOLD}{message}{COLORS.ENDC}"
 
-    def print_bold_green(message: str):
-        print(f"{COLORS.BOLD_GREEN}{message}{COLORS.ENDC}")
+    def underline(message: str):
+        return f"{COLORS.UNDERLINE}{message}{COLORS.ENDC}"
 
-    def print_bold_red(message: str):
-        print(f"{COLORS.BOLD_RED}{message}{COLORS.ENDC}")
+    def black(message: str):
+        return f"{COLORS.BLACK}{message}{COLORS.ENDC}"
 
-    def print_bold_cyan(message: str):
-        print(f"{COLORS.BOLD_CYAN}{message}{COLORS.ENDC}")
+    def red(message: str):
+        return f"{COLORS.RED}{message}{COLORS.ENDC}"
 
-    def print_bold_yellow(message: str):
-        print(f"{COLORS.BOLD_YELLOW}{message}{COLORS.ENDC}")
+    def green(message: str):
+        return f"{COLORS.GREEN}{message}{COLORS.ENDC}"
 
-    def print_bold_blue(message: str):
-        print(f"{COLORS.BOLD_BLUE}{message}{COLORS.ENDC}")
+    def yellow(message: str):
+        return f"{COLORS.YELLOW}{message}{COLORS.ENDC}"
 
-    def print_bold_white(message: str):
-        print(f"{COLORS.BOLD_WHITE}{message}{COLORS.ENDC}")
+    def blue(message: str):
+        return f"{COLORS.BLUE}{message}{COLORS.ENDC}"
 
-    def print_bold_black(message: str):
-        print(f"{COLORS.BOLD_BLACK}{message}{COLORS.ENDC}")
+    def magenta(message: str):
+        return f"{COLORS.MAGENTA}{message}{COLORS.ENDC}"
 
-    def print_bold(message: str):
-        print(f"{COLORS.BOLD}{message}{COLORS.ENDC}")
+    def cyan(message: str):
+        return f"{COLORS.CYAN}{message}{COLORS.ENDC}"
 
-    def print_underline(message: str):
-        print(f"{COLORS.UNDERLINE}{message}{COLORS.ENDC}")
-
-    def print_black(message: str):
-        print(f"{COLORS.BLACK}{message}{COLORS.ENDC}")
-
-    def print_red(message: str):
-        print(f"{COLORS.RED}{message}{COLORS.ENDC}")
-
-    def print_green(message: str):
-        print(f"{COLORS.GREEN}{message}{COLORS.ENDC}")
-
-    def print_yellow(message: str):
-        print(f"{COLORS.YELLOW}{message}{COLORS.ENDC}")
-
-    def print_blue(message: str):
-        print(f"{COLORS.BLUE}{message}{COLORS.ENDC}")
-
-    def print_magenta(message: str):
-        print(f"{COLORS.MAGENTA}{message}{COLORS.ENDC}")
-
-    def print_cyan(message: str):
-        print(f"{COLORS.CYAN}{message}{COLORS.ENDC}")
-
-    def print_white(message: str):
-        print(f"{COLORS.WHITE}{message}{COLORS.ENDC}")
+    def white(message: str):
+        return f"{COLORS.WHITE}{message}{COLORS.ENDC}"
