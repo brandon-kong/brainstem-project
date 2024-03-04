@@ -22,7 +22,7 @@ def main():
 
     # Program loop
     while True:        
-        print(f"Please choose from the following options:")
+        print(f"Please choose from the following options:\n")
 
         choice = user_input("list",
                             "Enter the number of your choice: ",
@@ -37,7 +37,7 @@ def main():
         elif choice == 3:
             Visualizer()
         elif choice == 4:
-            print(Print.bold(Print.red("Exiting the program. Goodbye!")))
+            print(Print.bold(Print.red("\nExiting the program. Goodbye!\n")))
             break
         
         # New line for readability

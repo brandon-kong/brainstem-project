@@ -12,10 +12,10 @@ from util.input import Print, user_input
 
 # Constants
 
-engines = ["matplotlib", "seaborn", "plotly"]
+engines = ["matplotlib", "plotly", "seaborn"]
 
 class Visualizer:
-    software = "matplotlib"
+    engine = "matplotlib"
 
     def __init__(self):
         self.init()
@@ -30,6 +30,6 @@ class Visualizer:
                                 "Which visualization engine would you like to use: ",
                                 choices=engines)
 
-            self.software = engines[choice - 1]
+            self.engine = engines[choice - 1]
 
-        print(Print.bold(Print.green(f"Visualizer initialized with {self.software}.")))
+        print(Print.bold(Print.green(f"\nVisualizer initialized with {Print.underline(self.engine)}.")))

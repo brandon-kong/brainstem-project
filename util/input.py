@@ -43,11 +43,13 @@ def list_input(message: str, choices: list[str]) -> int:
 
     try:
         # handle 0-based index
+        print()
         choice = input(message)
 
         if int(choice) == 0:
             raise ValueError
 
+        val = choices[int(choice) - 1]
         return int(choice)
     
     except (ValueError, IndexError):
