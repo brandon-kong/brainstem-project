@@ -47,7 +47,12 @@ DATA_SETS = {
    "Coronal": {
        "Density": {
            "No_NaN": "data/parent/[4k]_DenCor_No_NaN.csv",
-           "[0.001]": "data/parent/[644]_DenCor_0.001.csv",
+           "NewDenC": "data/parent/[4k]_NewDenCor.csv",
+       }
+   },
+   "Sagittal": {
+       "Density": {
+           "Test": "data/parent/[4k]_DenCor_No_NaN.csv",
        }
    }
 }

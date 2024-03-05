@@ -1,18 +1,23 @@
 """
-util/cache.py
+util/directory_cache.py
 
 This module is responsible for providing a cache data
 structure that can be used to store and retrieve data
+where the key is a path and values are dictionaries or
+other data structures.
+
 """
 
 # Imports
 from typing import Any, Optional
 
-# Constants
-from util.constants import CACHE_SIZE
+from util.cache import Cache
 from util.input import Print
 
-class Cache():
+# Constants
+from util.constants import CACHE_SIZE
+
+class DirectoryCache(Cache):
     """
     A class that represents a cache data structure.
     
@@ -56,16 +61,17 @@ class Cache():
         :return:
         """
 
-        return self.cache.get(key, None)
-    
-    def get_all(self) -> dict[str, Any]:
-        """
-        Gets all the values from the cache.
+        keys = key.split("/")
 
-        :return: A dictionary of all the key-value pairs in the cache.
-        """
+        data = self.cache
 
-        return self.cache
+        for k in keys:
+            if k in data:
+                data = data[k]
+            else:
+                return None
+            
+        return data
 
     def set(self, key: str, value: Any):
         """
@@ -79,10 +85,18 @@ class Cache():
         :return:
         """
         
+        keys = key.split("/")
+        data = self.cache
+
+        for k in keys[:-1]:
+            if k not in data:
+                data[k] = {}
+            data = data[k]
+
+        data[keys[-1]] = value
+
         if len(self.cache) >= self.size:
             self.cache.popitem()
-
-        self.cache[key] = value
 
     def has(self, key: str) -> bool:
         """
@@ -92,26 +106,16 @@ class Cache():
         :return: True if the cache has the key, False otherwise.
         """
 
-        return key in self.cache
-    
-    def clear(self):
-        """
-        Clears the cache.
-        """
-        
-        self.cache.clear()
+        keys = key.split("/")
+        data = self.cache
 
-    def clear_except(self, keys: list[str]):
-        """
-        Clears the cache except for the specified keys.
+        for k in keys:
+            if k in data:
+                data = data[k]
+            else:
+                return False
 
-        :param keys:
-        :return:
-        """
-
-        for key in list(self.cache.keys()):
-            if key not in keys:
-                self.cache.pop(key)
+        return True
 
     def remove(self, key: str):
         """
@@ -121,8 +125,16 @@ class Cache():
         :return:
         """
 
-        if self.has(key):
-            self.cache.pop(key)
+        keys = key.split("/")
+        data = self.cache
+
+        for k in keys[:-1]:
+            if k in data:
+                data = data[k]
+            else:
+                return
+
+        data.pop(keys[-1])
 
     def items(self):
         """
@@ -168,37 +180,50 @@ class Cache():
         :param level:
         :return:
         """
+        
+        if not data or not isinstance(data, dict):
+            return
+        
+        for key, value in data.items():
+            print(" " * level * 4 + key)
+
+            if isinstance(value, dict):
+                if value:
+                    self.print_tree_recursive(value, level + 1)
+            else:
+                #print(" " * (level + 1) * 4 + f"")
+                pass
+    
+    def get_leafs(self) -> list[str]:
+        """
+        Get the leaf nodes of the cache.
+
+        :return: The leaf nodes of the cache.
+        """
+
+        return self.get_leafs_recursive(self.cache)
+    
+    def get_leafs_recursive(self, data: dict[str, Any], path: str = "") -> list[str]:
+        """
+        Get the leaf nodes of the cache recursively.
+
+        :param data:
+        :param path:
+        :return: The leaf nodes of the cache.
+        """
+
+        leafs = []
 
         for key, value in data.items():
             if isinstance(value, dict):
-                print(Print.cyan("\t" * level + key))
-                self.print_tree_recursive(value, level + 1)
+                leafs.extend(self.get_leafs_recursive(value, f"{path}/{key}"))
             else:
-                # see if key is splittable
-                if "/" in key:
-                    new_key = key.split("/")[0]
+                leafs.append(f"{path}/{key}")
 
-                    # print the key
-                    print(Print.cyan("\t" * level + new_key))
-
-                    # recurse through the rest of the key
-                    self.print_tree_recursive({"/".join(key.split("/")[1:]): value}, level + 1)
-
-
-
-
+        return leafs
+    
     def count(self):
-        """
-        Gets the number of items in the cache.
-
-        :return: The number of items in the cache.
-        """
-
-        return len(self.cache)
-
+        return len(self.get_leafs())
+    
     def __len__(self):
         return self.count()
-
-    # Aliases
-    add = set
-    exists = has
