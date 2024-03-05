@@ -14,33 +14,34 @@ import util.data
 from util.input import user_input, Print
 from util.constants import TERMINAL_COLORS as COLORS
 
+# Drivers for the program
+from drivers.visualization.main import Visualizer
+
 def main():
-    Print.print_bold_magenta("\nWelcome to the Brainstem Orofacial Motor Behaviors program.\n")
+    print(Print.bold(Print.magenta("\nWelcome to the Brainstem Orofacial Motor Behaviors program.\n")))
 
     # Program loop
     while True:        
-        print(f"Please choose from the following options:")
+        print(f"Please choose from the following options:\n")
 
         choice = user_input("list",
                             "Enter the number of your choice: ",
                             choices=["Perform K-Means", "Generate a Dataset", "Visualize a Dataset", "Exit"])
 
+        # New line for readability
+
         if choice == 1:            
-            Print.print_bold_green("K-Means")
+            print(Print.bold(Print.green("K-Means")))
         elif choice == 2:
-            Print.print_bold_green("Generate a Dataset")
+            print(Print.bold(Print.green("Generate a Dataset")))
         elif choice == 3:
-            Print.print_bold_green("Visualize a Dataset")
+            Visualizer()
         elif choice == 4:
-            Print.print_bold_red("Exiting the program")
+            print(Print.bold(Print.red("\nExiting the program. Goodbye!\n")))
             break
         
         # New line for readability
         print()
-
-
-
-
 
 
 if __name__ == "__main__":
