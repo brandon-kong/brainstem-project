@@ -18,7 +18,10 @@ from time import sleep
 from util.directory_cache import DirectoryCache
 from util.cache import Cache
 from util.input import Print, user_input
-from util.data import get_csv_file
+from util.data import (
+    get_csv_file,
+    contains_nan
+)
 
 # Constants
 from util.constants import DATA_SETS
@@ -48,18 +51,7 @@ class Data:
 
         # Run the data pipeline
 
-        print("Which data set would you like to load?")
-        self.print_data()
-
-        choice = user_input("text", "Enter the name of the data set: ")
-
-        while not self.data_cache.has(choice) or isinstance(self.data_cache.get(choice), dict):
-            print(Print.bold(Print.red(f"Data set {choice} not found.")))
-            choice = user_input("text", "Enter the name of the data set: ")   
-
-        print(Print.bold(Print.green(f"Loading {choice}...")))
-
-        dataset = self.data_cache.get(choice)
+        dataset = self.retrieve_dataset()
 
         print(dataset.head())
 
@@ -93,3 +85,27 @@ class Data:
 
         self.data_cache.print_tree()
 
+    def retrieve_dataset(self):
+        """
+        Retrieve a dataset from the cache.
+
+        :return:
+        """
+
+        print("Which data set would you like to load?")
+        self.print_data()
+
+        choice = user_input("text", "Enter the name of the data set: ")
+
+        while not self.data_cache.has(choice) or isinstance(self.data_cache.get(choice), dict):
+            print(Print.bold(Print.red(f"Data set {choice} not found.")))
+            choice = user_input("text", "Enter the name of the data set: ")
+
+        print(Print.bold(Print.green(f"\nLoading data set {choice}...")))
+
+        dataset = self.data_cache.get(choice)
+
+        if contains_nan(dataset):
+            print(Print.yellow(f"{choice} contains NaN values.\n"))
+
+        return self.data_cache.get(choice)
