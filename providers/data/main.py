@@ -11,6 +11,7 @@ Ex: data/parent/[4k]_DenCor_No_NaN: <4.3K x 1465> DataFrame
 """
 
 # Imports
+from pandas import DataFrame
 from typing import Dict
 from time import sleep
 
@@ -28,7 +29,7 @@ from config.main import Config
 
 class Data:
     config: Config = None
-    data_cache: DirectoryCache = DirectoryCache()
+    data_cache: DirectoryCache[DataFrame] = DirectoryCache()
 
     def __init__(self, config=None):
         self.config = config
@@ -60,8 +61,7 @@ class Data:
 
         dataset = self.data_cache.get(choice)
 
-        if dataset is not None:
-            print(dataset.head())
+        print(dataset.head())
 
         sleep(1)
         print(Print.bold(Print.green("Data pipeline finished.")))

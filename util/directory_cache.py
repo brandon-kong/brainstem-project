@@ -9,7 +9,7 @@ other data structures.
 """
 
 # Imports
-from typing import Any, Optional
+from typing import Any, Optional, TypeVar, Generic
 
 from util.cache import Cache
 from util.input import Print
@@ -17,7 +17,9 @@ from util.input import Print
 # Constants
 from util.constants import CACHE_SIZE
 
-class DirectoryCache(Cache):
+T = TypeVar("T")
+
+class DirectoryCache(Cache[T]):
     """
     A class that represents a cache data structure.
     
@@ -46,14 +48,14 @@ class DirectoryCache(Cache):
         Gets the items in the cache.
     """
 
-    cache: dict[str, Any] = {}
+    cache: dict[str, T] = {}
     size: int = CACHE_SIZE
 
     def __init__(self, size: Optional[int] = None):
         if size:
             self.size = size
 
-    def get(self, key: str) -> Any:
+    def get(self, key: str) -> T:
         """
         Gets the value from the cache based on the key.
 
@@ -73,7 +75,7 @@ class DirectoryCache(Cache):
             
         return data
 
-    def set(self, key: str, value: Any):
+    def set(self, key: str, value: T):
         """
         Sets the value in the cache based on the key.
 
@@ -163,7 +165,7 @@ class DirectoryCache(Cache):
 
         self.print_tree_recursive(self.cache)
 
-    def print_tree_recursive(self, data: dict[str, Any], level: int = 0):
+    def print_tree_recursive(self, data: dict[str, T], level: int = 0):
         """
         Print the cache in a tree-like structure recursively.
         They are slash-separated. For example, if the cache
@@ -189,7 +191,7 @@ class DirectoryCache(Cache):
 
             if isinstance(value, dict):
                 self.print_tree_recursive(value, level + 1)
-                
+
     
     def get_leafs(self) -> list[str]:
         """
@@ -200,7 +202,7 @@ class DirectoryCache(Cache):
 
         return self.get_leafs_recursive(self.cache)
     
-    def get_leafs_recursive(self, data: dict[str, Any], path: str = "") -> list[str]:
+    def get_leafs_recursive(self, data: dict[str, T], path: str = "") -> list[str]:
         """
         Get the leaf nodes of the cache recursively.
 
