@@ -21,6 +21,14 @@ def main():
     print(Print.bold(Print.magenta("\nWelcome to the Brainstem Orofacial Motor Behaviors program.\n")))
 
     config = Config()
+
+    # drivers
+    visualizer = None
+
+    # keep a cache of the loaded drivers
+    drivers = {
+        "visualizer": visualizer
+    }
     
     # Program loop
     while True:        
@@ -28,7 +36,12 @@ def main():
 
         choice = user_input("list",
                             "Enter the number of your choice: ",
-                            choices=["Perform K-Means", "Generate a Dataset", "Visualize a Dataset", "Exit"])
+                            choices=[
+                                "Perform K-Means", 
+                                "Generate a Dataset", 
+                                "Visualize a Dataset", 
+                                "Update Configurations",
+                                "Exit"])
 
         # New line for readability
 
@@ -37,8 +50,18 @@ def main():
         elif choice == 2:
             print(Print.bold(Print.green("Generate a Dataset")))
         elif choice == 3:
-            Visualizer(config)
+            if drivers["visualizer"] is None:
+                drivers["visualizer"] = Visualizer(config)
+            
         elif choice == 4:
+            # Update configs
+            config.update_config_file()
+
+            # Clear the cache of drivers
+            for key in drivers:
+                drivers[key] = None
+
+        elif choice == 5:
             print(Print.bold(Print.red("\nExiting the program. Goodbye!\n")))
             break
         
