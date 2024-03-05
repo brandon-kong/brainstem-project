@@ -10,6 +10,7 @@ Machine-Learning in Brainstem Orofacial Motor Behaviors.
 
 # Imports
 from util.input import user_input, Print
+from util.cache import Cache
 
 # Config
 from config.main import Config
@@ -23,12 +24,9 @@ def main():
     config = Config()
 
     # drivers
-    visualizer = None
 
     # keep a cache of the loaded drivers
-    drivers = {
-        "visualizer": visualizer
-    }
+    drivers_cache = Cache()
     
     # Program loop
     while True:        
@@ -50,16 +48,17 @@ def main():
         elif choice == 2:
             print(Print.bold(Print.green("Generate a Dataset")))
         elif choice == 3:
-            if drivers["visualizer"] is None:
-                drivers["visualizer"] = Visualizer(config)
+            if not drivers_cache.has("visualizer"):
+                drivers_cache.add("visualizer", Visualizer(config))
+
+            drivers_cache.get("visualizer").run()
             
         elif choice == 4:
             # Update configs
             config.update_config_file()
 
             # Clear the cache of drivers
-            for key in drivers:
-                drivers[key] = None
+            drivers_cache.clear()
 
         elif choice == 5:
             print(Print.bold(Print.red("\nExiting the program. Goodbye!\n")))

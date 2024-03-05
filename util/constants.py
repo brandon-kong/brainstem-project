@@ -39,3 +39,5 @@ class TERMINAL_COLORS():
     BOLD_CYAN = '\033[1;36m'
     BOLD_WHITE = '\033[1;37m'
     
+# CACHE
+CACHE_SIZE = 100

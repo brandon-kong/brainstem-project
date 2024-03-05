@@ -28,3 +28,12 @@ class Visualizer(Driver):
         self.engine = self.config.get_visualization_engine()
         
         print(Print.bold(Print.green(f"Visualizer initialized with {Print.underline(self.engine)}.")))
+
+    def run(self):  
+        print(Print.bold(Print.green("Running the visualizer...")))
+        
+        # Run the visualization engine
+        print(f"\nRunning the {self.engine} engine.")
+        
+        sleep(1)
+        print(Print.bold(Print.green("Visualizer finished.")))
