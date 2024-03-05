@@ -6,9 +6,15 @@ application.
 
 """
 
+# ENGINES
+VISUALIZATION_ENGINES = ["plotly", "matplotlib", "seaborn"]
+
 CLUSTER_LABEL_COLUMN_PREFIX = "Cluster_"
 
+# CONFIG
+CONFIG_FILE = "config.ini"
 
+# TERMINAL COLORS
 class TERMINAL_COLORS():
     ENDC = '\033[0m'
 

@@ -9,17 +9,19 @@ Machine-Learning in Brainstem Orofacial Motor Behaviors.
 """
 
 # Imports
-import os
-import util.data
 from util.input import user_input, Print
-from util.constants import TERMINAL_COLORS as COLORS
 
-# Drivers for the program
+# Config
+from config.main import Config
+
+# Drivers
 from drivers.visualization.main import Visualizer
 
 def main():
     print(Print.bold(Print.magenta("\nWelcome to the Brainstem Orofacial Motor Behaviors program.\n")))
 
+    config = Config()
+    
     # Program loop
     while True:        
         print(f"Please choose from the following options:\n")
@@ -35,7 +37,7 @@ def main():
         elif choice == 2:
             print(Print.bold(Print.green("Generate a Dataset")))
         elif choice == 3:
-            Visualizer()
+            Visualizer(config)
         elif choice == 4:
             print(Print.bold(Print.red("\nExiting the program. Goodbye!\n")))
             break

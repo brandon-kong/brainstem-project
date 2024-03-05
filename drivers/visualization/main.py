@@ -7,29 +7,24 @@ application.
 """
 
 # Imports
-from util.input import Print, user_input
+from time import sleep
 
+from util.input import Print
+from drivers.main import Driver
 
 # Constants
+from util.constants import VISUALIZATION_ENGINES as ENGINES
 
-engines = ["matplotlib", "plotly", "seaborn"]
+class Visualizer(Driver):
+    engine: str = ENGINES[0]
 
-class Visualizer:
-    engine = "matplotlib"
-
-    def __init__(self):
-        self.init()
+    def __init__(self, config=None):
+        super().__init__(config)
 
     def init(self):
-        print(Print.bold(Print.green("\nInitializing the visualizer...\n")))
-
-        choice: int | None = None
-
-        while not choice:
-            choice = user_input("list",
-                                "Which visualization engine would you like to use: ",
-                                choices=engines)
-
-            self.engine = engines[choice - 1]
-
-        print(Print.bold(Print.green(f"\nVisualizer initialized with {Print.underline(self.engine)}.")))
+        print(Print.bold(Print.yellow("\nInitializing the visualizer...")))
+        
+        sleep(1)
+        self.engine = self.config.get_visualization_engine()
+        
+        print(Print.bold(Print.green(f"Visualizer initialized with {Print.underline(self.engine)}.")))

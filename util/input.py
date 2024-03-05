@@ -46,7 +46,7 @@ def list_input(message: str, choices: list[str]) -> int:
         print()
         choice = input(message)
 
-        if int(choice) == 0:
+        if int(choice) <= 0:
             raise ValueError
 
         val = choices[int(choice) - 1]
