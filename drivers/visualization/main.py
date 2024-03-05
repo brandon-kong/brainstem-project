@@ -18,8 +18,8 @@ from util.constants import VISUALIZATION_ENGINES as ENGINES
 class Visualizer(Driver):
     engine: str = ENGINES[0]
 
-    def __init__(self, config=None):
-        super().__init__(config)
+    def __init__(self, config=None, data_driver=None):
+        super().__init__(config, data_driver)
 
     def init(self):
         print(Print.bold(Print.yellow("\nInitializing the visualizer...")))

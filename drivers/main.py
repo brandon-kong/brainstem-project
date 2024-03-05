@@ -10,12 +10,15 @@ from util.input import Print
 
 # Config
 from config.main import Config
+from providers.data.main import Data
 
 class Driver():
     config: Optional[Config] = None
+    data_driver: Optional[Data] = None
     
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, data_driver: Optional[Data]):
         self.config = config
+        self.data_driver = data_driver
         self.init()
         
     def init(self):

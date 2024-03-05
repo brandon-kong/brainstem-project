@@ -17,19 +17,21 @@ from config.main import Config
 
 # Drivers
 from drivers.visualization.main import Visualizer
-from drivers.data.main import Data
+from providers.data.main import Data
 
 def main():
     print(Print.bold(Print.magenta("\nWelcome to the Brainstem Orofacial Motor Behaviors program.\n")))
 
     config = Config()
+    data = Data(config)
 
     # drivers
 
     # keep a cache of the loaded drivers
     drivers_cache = Cache()
 
-    drivers_cache.set("data", Data(config))
+    # Add the data driver to the cache because it is always needed
+    drivers_cache.set("data", data)
     
     # Program loop
     while True:        
@@ -52,7 +54,7 @@ def main():
             drivers_cache.get("data").run()
         elif choice == 3:
             if not drivers_cache.has("visualizer"):
-                drivers_cache.add("visualizer", Visualizer(config))
+                drivers_cache.add("visualizer", Visualizer(config, data))
 
             drivers_cache.get("visualizer").run()
             

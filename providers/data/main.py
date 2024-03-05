@@ -12,16 +12,20 @@ from time import sleep
 
 from util.cache import Cache
 from util.input import Print
-from drivers.main import Driver
 
 # Constants
 from util.constants import DATA_SETS
 
-class Data(Driver):
+# Config
+from config.main import Config
+
+class Data():
+    config: Config = None
     data_cache: Cache = Cache()
 
     def __init__(self, config=None):
-        super().__init__(config)
+        self.config = config
+        self.init()
 
     def init(self):
         print(Print.bold(Print.yellow("\nInitializing the data pipeline...")))
