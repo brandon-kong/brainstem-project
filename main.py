@@ -17,6 +17,7 @@ from config.main import Config
 
 # Drivers
 from drivers.visualization.main import Visualizer
+from drivers.data.main import Data
 
 def main():
     print(Print.bold(Print.magenta("\nWelcome to the Brainstem Orofacial Motor Behaviors program.\n")))
@@ -27,6 +28,8 @@ def main():
 
     # keep a cache of the loaded drivers
     drivers_cache = Cache()
+
+    drivers_cache.set("data", Data(config))
     
     # Program loop
     while True:        
@@ -46,7 +49,7 @@ def main():
         if choice == 1:            
             print(Print.bold(Print.green("K-Means")))
         elif choice == 2:
-            print(Print.bold(Print.green("Generate a Dataset")))
+            drivers_cache.get("data").run()
         elif choice == 3:
             if not drivers_cache.has("visualizer"):
                 drivers_cache.add("visualizer", Visualizer(config))
@@ -57,8 +60,8 @@ def main():
             # Update configs
             config.update_config_file()
 
-            # Clear the cache of drivers
-            drivers_cache.clear()
+            # Clear the cache of drivers except for the data driver
+            drivers_cache.clear_except(['data'])
 
         elif choice == 5:
             print(Print.bold(Print.red("\nExiting the program. Goodbye!\n")))

@@ -32,10 +32,12 @@ class Cache():
         Checks if the cache has the key.
     clear()
         Clears the cache.
+    clear_except(keys: list[str])
+        Clears the cache except for the specified keys.
     remove(key: str)
         Removes the key from the cache.
     """
-    
+
     cache: dict[str, Any] = {}
     size: int = CACHE_SIZE
 
@@ -52,6 +54,15 @@ class Cache():
         """
 
         return self.cache.get(key, None)
+    
+    def get_all(self) -> dict[str, Any]:
+        """
+        Gets all the values from the cache.
+
+        :return: A dictionary of all the key-value pairs in the cache.
+        """
+
+        return self.cache
 
     def set(self, key: str, value: Any):
         """
@@ -83,6 +94,18 @@ class Cache():
         """
         
         self.cache.clear()
+
+    def clear_except(self, keys: list[str]):
+        """
+        Clears the cache except for the specified keys.
+
+        :param keys:
+        :return:
+        """
+
+        for key in list(self.cache.keys()):
+            if key not in keys:
+                self.cache.pop(key)
 
     def remove(self, key: str):
         """
