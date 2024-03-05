@@ -188,11 +188,8 @@ class DirectoryCache(Cache):
             print(" " * level * 4 + key)
 
             if isinstance(value, dict):
-                if value:
-                    self.print_tree_recursive(value, level + 1)
-            else:
-                #print(" " * (level + 1) * 4 + f"")
-                pass
+                self.print_tree_recursive(value, level + 1)
+                
     
     def get_leafs(self) -> list[str]:
         """
