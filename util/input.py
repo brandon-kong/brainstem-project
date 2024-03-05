@@ -69,6 +69,7 @@ def text_input(message: str) -> str:
 
     return input(message)
 
+
 class Print:
     def bold(message: str):
         return f"{COLORS.BOLD}{message}{COLORS.ENDC}"

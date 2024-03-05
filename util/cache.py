@@ -10,6 +10,7 @@ from typing import Any, Optional
 
 # Constants
 from util.constants import CACHE_SIZE
+from util.input import Print
 
 class Cache():
     """
@@ -36,6 +37,8 @@ class Cache():
         Clears the cache except for the specified keys.
     remove(key: str)
         Removes the key from the cache.
+    items()
+        Gets the items in the cache.
     """
 
     cache: dict[str, Any] = {}
@@ -117,6 +120,81 @@ class Cache():
 
         if self.has(key):
             self.cache.pop(key)
+
+    def items(self):
+        """
+        Gets the items in the cache.
+
+        :return: The items in the cache.
+        """
+
+        return self.cache.items()
+
+    def print_tree(self):
+        """
+        Print the cache in a tree-like structure. It
+        is slash-separated. For example, if the cache
+        has a key "a/b/c" with value "value", it will
+        be printed as:
+
+        a
+        |
+        |--- b
+        |    |
+        |    |--- c: value
+
+        :return:
+        """
+
+        self.print_tree_recursive(self.cache)
+
+    def print_tree_recursive(self, data: dict[str, Any], level: int = 0):
+        """
+        Print the cache in a tree-like structure recursively.
+        They are slash-separated. For example, if the cache
+        has a key "a/b/c" with value "value", it will
+        be printed as:
+
+         a
+        |
+        |--- b
+        |    |
+        |    |--- c: value
+
+        :param data:
+        :param level:
+        :return:
+        """
+
+        for key, value in data.items():
+            if isinstance(value, dict):
+                print(Print.cyan("\t" * level + key))
+                self.print_tree_recursive(value, level + 1)
+            else:
+                # see if key is splittable
+                if "/" in key:
+                    new_key = key.split("/")[0]
+
+                    # print the key
+                    print(Print.cyan("\t" * level + new_key))
+
+                    # recurse through the rest of the key
+                    self.print_tree_recursive({"/".join(key.split("/")[1:]): value}, level + 1)
+
+
+
+
+    def count(self):
+        """
+        Gets the number of items in the cache.
+
+        :return: The number of items in the cache.
+        """
+
+        return len(self.cache)
+
+    def __len__(self):
+        return self.count()
 
     # Aliases
     add = set

@@ -26,4 +26,3 @@ def get_csv_file(path: str) -> pd.DataFrame | None:
     except FileNotFoundError:
         print(f"File not found at {path}")
         return None
-
