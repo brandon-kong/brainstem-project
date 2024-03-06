@@ -23,6 +23,7 @@ from util.constants import (
 class Config:
     loaded: bool = False
     name: str = ""
+    load_genes_at_startup: bool = False
     visualization_engine: str = VISUALIZATION_ENGINES[0]
 
     def __init__(self):
@@ -56,6 +57,7 @@ class Config:
             data = json.load(file)
 
             self.name = data["name"]
+            self.load_genes_at_startup = data["load_genes_at_startup"]
             self.visualization_engine = data["visualization_engine"]
 
         print(Print.bold(Print.green("Configuration file loaded.\n")))
@@ -69,6 +71,13 @@ class Config:
 
         name = user_input("text", "What is your name: ") or self.name
 
+        load_genes_at_startup = user_input("list",
+                                            "Would you like to load the genes at startup: ",
+                                            choices=[
+                                                "Yes",
+                                                "No"
+                                            ])
+
         visualization_engine = user_input("list",
                                           "Which visualization engine would you like to use: ",
                                           choices=[
@@ -80,10 +89,12 @@ class Config:
         # Write the configuration settings to the configuration file in json format
 
         self.name = name
+        self.load_genes_at_startup = load_genes_at_startup == 1
         self.visualization_engine = VISUALIZATION_ENGINES[int(visualization_engine) - 1]
 
         json_data = {
             "name": name,
+            "load_genes_at_startup": self.load_genes_at_startup,
             "visualization_engine": visualization_engine
         }
 
@@ -110,3 +121,6 @@ class Config:
 
     def get_name(self):
         return self.name
+
+    def get_load_genes_at_startup(self):
+        return self.load_genes_at_startup

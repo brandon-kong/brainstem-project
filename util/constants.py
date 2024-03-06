@@ -55,12 +55,6 @@ DATA_SETS = {
         "Density": {
             MASTER_DATASET: "data/parent/[4k]_NewDenCor.csv",
             "No_NaN": "data/parent/[4k]_DenCor_No_NaN.csv",
-            "NewDenC": "data/parent/[4k]_NewDenCor.csv",
-        }
-    },
-    "Sagittal": {
-        "Density": {
-            "Test": "data/parent/[4k]_DenCor_No_NaN.csv",
         }
     }
 }

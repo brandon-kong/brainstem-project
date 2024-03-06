@@ -43,7 +43,6 @@ def main():
                                 "Perform K-Means",
                                 "Open Dataset Suite",
                                 "Visualize Data",
-                                "See Data Cache",
                                 "Update Configurations",
                                 "Exit"])
 
@@ -59,15 +58,13 @@ def main():
 
             drivers_cache.get("visualizer").run()
         elif choice == 4:
-            data.print_data()
-        elif choice == 5:
             # Update configs
             config.update_config_file()
 
             # Clear the cache of drivers except for the data driver
             drivers_cache.clear_except(['data'])
 
-        elif choice == 6:
+        elif choice == 5:
             print(Print.bold(Print.red("\nExiting the program. Goodbye!\n")))
             break
         

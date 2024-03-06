@@ -19,6 +19,9 @@ from pandas import DataFrame
 # Config
 from providers.config import Config
 
+# Drivers
+from providers.data_suite.data_generator import DataGenerator
+
 # Constants
 from util.constants import (
     DATA_SETS,
@@ -55,17 +58,10 @@ class Data:
         self.load_data_recursive(DATA_SETS, self.data_cache)
 
         # Now that the data is loaded, we can add individual genes into the cache
-        print(Print.bold(Print.green("\nLoading gene data...\n")))
-
-        # CORONAL DENSITY GENES
-        cor_density_path = DATA_SETS["Coronal"]["Density"][MASTER_DATASET]
-        cor_density = get_csv_file(cor_density_path)
-
-        # For each column that is a gene, add it to the cache
-
-        for column in cor_density.columns:
-            if column_is_gene_data(column):
-                self.data_cache.set(f"Coronal/Density/Genes/{column}", cor_density[column])
+        # only if the config allows it
+        if self.config.get_load_genes_at_startup():
+            print(Print.bold(Print.green("\nLoading gene data...\n")))
+            self.load_single_genes()
 
         print(Print.bold(
             Print.green(f"Data pipeline initialized with {Print.underline(str(len(self.data_cache)))} data sets ("
@@ -87,34 +83,30 @@ class Data:
                                 ])
 
         if what_to_do == 1:
-            pass
-
-        dataset = self.retrieve_dataset()
-        print(dataset.head())
-
-        # New line for readability
-        print()
-
-        how_to_use_dataset = user_input("list",
-                                        "How would you like to use your dataset: ",
-                                        choices=[
-                                            "Thresholding",
-                                            "Remove columns",
-                                            "Remove rows",
-                                            "Back"
-                                        ])
-
-        if how_to_use_dataset == 1:
-            print("Thresholding")
-        elif how_to_use_dataset == 2:
-            print("Remove columns")
-        elif how_to_use_dataset == 3:
-            print("Remove rows")
-        elif how_to_use_dataset == 4:
+            DataGenerator(self.config, self).run()
+        elif what_to_do == 2:
+            dataset = self.retrieve_dataset()
+            print(dataset.head())
+        elif what_to_do == 3:
+            print("Saving a dataset from memory")
+        elif what_to_do == 4:
+            self.print_data()
+        elif what_to_do == 5:
             return
 
         sleep(1)
         print(Print.bold(Print.green("Data pipeline finished.")))
+
+    def load_single_genes(self):
+        # CORONAL DENSITY GENES
+        cor_density_path = DATA_SETS["Coronal"]["Density"][MASTER_DATASET]
+        cor_density = get_csv_file(cor_density_path)
+
+        # For each column that is a gene, add it to the cache
+
+        for column in cor_density.columns:
+            if column_is_gene_data(column):
+                self.data_cache.set(f"Coronal/Density/Genes/{column}", cor_density[column])
 
     def get_all_loaded_data(self):
         return self.data_cache.get_all()
