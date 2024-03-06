@@ -64,6 +64,8 @@ def main():
             # Clear the cache of drivers except for the data driver
             drivers_cache.clear_except(['data'])
 
+            print(Print.yellow("Some configurations may require you to restart the program to take effect."))
+
         elif choice == 5:
             print(Print.bold(Print.red("\nExiting the program. Goodbye!\n")))
             break
