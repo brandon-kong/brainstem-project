@@ -28,6 +28,7 @@ from util.constants import (
     MAX_DIRECTORY_PRINT_DEPTH,
     MASTER_DATASET,
     STRUCTURE_IDS,
+    SAVE_GENERATED_DATA_PATH
 )
 
 # Utilities
@@ -35,7 +36,7 @@ from util.data import (
     get_csv_file,
     contains_nan,
     column_is_gene_data,
-    combine_data
+    save_csv_file
 )
 
 from util.string_util import get_most_alike_from_list
@@ -77,7 +78,7 @@ class Data:
         # Run the data pipeline
 
         what_to_do = user_input("list",
-                                "What would you like to do?",
+                                "What would you like to do: ",
                                 choices=[
                                     "Generate a new dataset",
                                     "Load a dataset",
@@ -92,7 +93,7 @@ class Data:
             dataset = self.retrieve_dataset()
             print(dataset.head())
         elif what_to_do == 3:
-            print("Saving a dataset from memory")
+            self.save_data_from_memory()
         elif what_to_do == 4:
             self.print_data()
         elif what_to_do == 5:
@@ -229,6 +230,42 @@ class Data:
                 shape = value.shape
                 print(Print.cyan(" " * (level + 1) * 4 + f"<{shape[0]} x {shape[1]}> DataFrame"))
 
+    def save_data_from_memory(self):
+        """
+        Save the data from memory to a file.
+
+        :return:
+        """
+
+        print("Which data set would you like to save?")
+        self.print_data()
+
+        choice = user_input("text", "Enter the name of the data set: ")
+
+        while not self.data_cache.has(choice) or isinstance(self.data_cache.get(choice), dict):
+            # If the data set is not found, try to find the most alike data set
+            all_directories = self.data_cache.get_all_directories()
+            most_alike = get_most_alike_from_list(choice, all_directories)
+            print(Print.bold(Print.red(f"Data set {choice} not found.")))
+            print(Print.bold(Print.red(f"Did you mean {most_alike}?")))
+            choice = user_input("text", "Enter the name of the data set: ")
+
+        name_of_file = user_input("text", "Enter the name of the file to save the data set to: ")
+
+        while name_of_file == "":
+            print(Print.bold(Print.red("The name of the file cannot be empty.")))
+            name_of_file = user_input("text", "Enter the name of the file to save the data set to: ")
+
+        file_path = self.config.get_save_generate() + name_of_file + ".csv"
+
+        print(Print.bold(Print.green(f"\nSaving data set {file_path}...")))
+
+        dataset = self.data_cache.get(choice)
+        
+        save_csv_file(dataset, file_path)
+
+        print(Print.bold(Print.green(f"Data set {choice} saved.")))
+
     def get_bytes(self):
         """
         Get the bytes of the cache.
@@ -247,3 +284,5 @@ class Data:
                 byte_sum += mem_usage.sum()
 
         return byte_sum
+    
+

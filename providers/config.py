@@ -16,14 +16,17 @@ from util.input import user_input, Print
 # Constants
 from util.constants import (
     VISUALIZATION_ENGINES,
-    CONFIG_FILE
+    CONFIG_FILE,
+    SAVE_GENERATED_DATA_PATH
 )
 
 
 class Config:
     loaded: bool = False
     name: str = ""
+    save_generated_data_path: str = SAVE_GENERATED_DATA_PATH
     load_genes_at_startup: bool = False
+
     visualization_engine: str = VISUALIZATION_ENGINES[0]
 
     def __init__(self):
@@ -71,6 +74,8 @@ class Config:
 
         name = user_input("text", "What is your name: ") or self.name
 
+        save_generated_data_path = user_input("text", f"Where would you like to save any generated data (default: {self.save_generated_data_path}):") or self.save_generated_data_path
+
         load_genes_at_startup = user_input("list",
                                             "Would you like to load the genes at startup: ",
                                             choices=[
@@ -89,11 +94,13 @@ class Config:
         # Write the configuration settings to the configuration file in json format
 
         self.name = name
+        self.save_generated_data_path = save_generated_data_path
         self.load_genes_at_startup = load_genes_at_startup == 1
         self.visualization_engine = VISUALIZATION_ENGINES[int(visualization_engine) - 1]
 
         json_data = {
             "name": name,
+            "save_generated_data_path": save_generated_data_path,
             "load_genes_at_startup": self.load_genes_at_startup,
             "visualization_engine": visualization_engine
         }
@@ -124,3 +131,6 @@ class Config:
 
     def get_load_genes_at_startup(self):
         return self.load_genes_at_startup
+    
+    def get_save_generate(self):
+        return self.save_generated_data_path

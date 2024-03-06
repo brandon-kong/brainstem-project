@@ -9,6 +9,7 @@ This includes getting data, writing data, and manipulating data.
 """
 
 # Imports
+import os
 import pandas as pd
 from numpy import bool_
 
@@ -30,6 +31,24 @@ def get_csv_file(path: str) -> pd.DataFrame | None:
     except FileNotFoundError:
         print(f"File not found at {path}")
         return None
+    
+
+def save_csv_file(data: pd.DataFrame, path: str) -> None:
+    """
+    Saves the data to a csv file at the specified path.
+
+    :param data:
+    :param path:
+    :return:
+    """
+
+    # Create the directory if it doesn't exist
+    new_path = path.split("/")
+    new_path.pop()
+    new_path = "/".join(path)
+    os.makedirs(new_path, exist_ok=True)
+
+    data.to_csv(path)
 
 
 def contains_nan(data: pd.DataFrame) -> bool_:
@@ -109,3 +128,4 @@ def contains_non_gene_columns(data: pd.DataFrame) -> bool:
     """
 
     return all(column in data.columns for column in NON_GENE_COLUMNS)
+
