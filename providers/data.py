@@ -26,14 +26,16 @@ from providers.data_suite.data_generator import DataGenerator
 from util.constants import (
     DATA_SETS,
     MAX_DIRECTORY_PRINT_DEPTH,
-    MASTER_DATASET
+    MASTER_DATASET,
+    STRUCTURE_IDS,
 )
 
 # Utilities
 from util.data import (
     get_csv_file,
     contains_nan,
-    column_is_gene_data
+    column_is_gene_data,
+    combine_data
 )
 
 from util.string_util import get_most_alike_from_list
@@ -59,8 +61,10 @@ class Data:
 
         # Now that the data is loaded, we can add individual genes into the cache
         # only if the config allows it
+
         if self.config.get_load_genes_at_startup():
             print(Print.bold(Print.green("\nLoading gene data...\n")))
+            self.load_structure_ids()
             self.load_single_genes()
 
         print(Print.bold(
@@ -107,6 +111,15 @@ class Data:
         for column in cor_density.columns:
             if column_is_gene_data(column):
                 self.data_cache.set(f"Coronal/Density/Genes/{column}", cor_density[column])
+
+    def load_structure_ids(self):
+        # CORONAL DENSITY GENES
+        cor_density_path = DATA_SETS["Coronal"]["Density"][MASTER_DATASET]
+        cor_density: DataFrame = get_csv_file(cor_density_path)
+
+        for structure in STRUCTURE_IDS:
+            isolated_structure = cor_density[cor_density["Structure-ID"] == structure]
+            self.data_cache.set(f"Coronal/Density/Structure-IDs/{structure}", isolated_structure)
 
     def get_all_loaded_data(self):
         return self.data_cache.get_all()

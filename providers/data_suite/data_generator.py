@@ -26,7 +26,9 @@ class DataGenerator:
     data_driver = None
 
     def __init__(self, config=None, data_driver=None):
-        super().__init__(config, data_driver)
+        self.config = config
+        self.data_driver = data_driver
+        self.init()
 
     def init(self):
         print(Print.bold(Print.yellow("\nInitializing the data generator...")))

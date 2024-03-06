@@ -62,3 +62,7 @@ DATA_SETS = {
 NON_GENE_COLUMNS = ["index", "X", "Y", "Z", "Structure-ID"]
 
 MAX_DIRECTORY_PRINT_DEPTH = 20  # The maximum depth to print the directories in the cache
+
+STRUCTURE_IDS = [
+    773, 136, 1098, 939, 970, 235, 143, 978, 1107, 852, 661, 307, 1048
+]

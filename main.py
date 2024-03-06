@@ -31,7 +31,9 @@ def main():
     drivers_cache = Cache()
 
     # Add the data driver to the cache because it is always needed
-    drivers_cache.set("data", data)
+    # drivers_cache.set("data", data)
+
+    print(data.data_cache.get('data'))
     
     # Program loop
     while True:        
@@ -51,7 +53,7 @@ def main():
         if choice == 1:            
             print(Print.bold(Print.green("K-Means")))
         elif choice == 2:
-            drivers_cache.get("data").run()
+            data.run()
         elif choice == 3:
             if not drivers_cache.has("visualizer"):
                 drivers_cache.add("visualizer", Visualizer(config, data))

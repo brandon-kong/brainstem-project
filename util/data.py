@@ -26,7 +26,7 @@ def get_csv_file(path: str) -> pd.DataFrame | None:
     """
 
     try:
-        return pd.read_csv(path, header=0, float_precision='high')
+        return pd.read_csv(path, header=0, float_precision='high', index_col=0)
     except FileNotFoundError:
         print(f"File not found at {path}")
         return None
