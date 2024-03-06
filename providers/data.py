@@ -21,6 +21,7 @@ from providers.config import Config
 
 # Drivers
 from providers.data_suite.data_generator import DataGenerator
+from util.cache import Cache
 
 # Constants
 from util.constants import (

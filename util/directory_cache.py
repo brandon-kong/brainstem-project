@@ -48,13 +48,9 @@ class DirectoryCache(Cache[T | dict[str, T]]):
         Gets the items in the cache.
     """
 
-    size: int = CACHE_SIZE
-    all_directories: list[str] = []  # To improve performance, we can store all the directories in a list
-
     def __init__(self, size: Optional[int] = None):
         super().__init__(size)
-        if size:
-            self.size = size
+        self.all_directories = []   # To improve performance, we can store all the directories in a list
 
     def get(self, key: str) -> T:
         """

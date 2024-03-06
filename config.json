@@ -1,6 +1,6 @@
 {
-    "name": "Branodn",
-    "save_generated_data_path": "./",
-    "load_genes_at_startup": false,
+    "name": "Brandon",
+    "save_generated_data_path": "data/generated/",
+    "load_genes_at_startup": true,
     "visualization_engine": 1
 }

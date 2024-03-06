@@ -43,12 +43,12 @@ class Cache(Generic[T]):
         Gets the items in the cache.
     """
 
-    cache: dict[str, T] = {}
-    size: int = CACHE_SIZE
-
     def __init__(self, size: Optional[int] = None):
+        self.size = CACHE_SIZE
         if size:
             self.size = size
+    
+        self.cache = {}
 
     def get(self, key: str) -> T:
         """
