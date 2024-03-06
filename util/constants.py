@@ -56,6 +56,9 @@ DATA_SETS = {
             MASTER_DATASET: "data/parent/[4k]_NewDenCor.csv",
             "No_NaN": "data/parent/[4k]_DenCor_No_NaN.csv",
         }
+    },
+    "Sagittal": {
+        "MASTER":  "data/parent/[4k]_NewDenCor.csv",
     }
 }
 
