@@ -12,7 +12,7 @@ VISUALIZATION_ENGINES = ["plotly", "matplotlib", "seaborn"]
 CLUSTER_LABEL_COLUMN_PREFIX = "Cluster_"
 
 # CONFIG
-CONFIG_FILE = "config.ini"
+CONFIG_FILE = "config.json"
 
 
 # TERMINAL COLORS

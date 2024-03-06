@@ -1,5 +1,5 @@
 """
-data/main.py
+data/config.py
 
 This module is responsible for initiating the 
 data pipeline for the
@@ -17,7 +17,7 @@ from typing import Dict
 from pandas import DataFrame
 
 # Config
-from config.main import Config
+from providers.config import Config
 
 # Constants
 from util.constants import (
@@ -30,10 +30,7 @@ from util.constants import (
 from util.data import (
     get_csv_file,
     contains_nan,
-    contains_non_gene_columns,
-    contains_xyz_column,
-    column_is_gene_data,
-    is_gene_data
+    column_is_gene_data
 )
 
 from util.string_util import get_most_alike_from_list

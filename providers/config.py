@@ -1,5 +1,5 @@
 """
-config/main.py
+config/config.py
 
 This driver is responsible for driving the 
 rogram by setting up basic configurations for the user
@@ -9,6 +9,7 @@ hassle of setting up the program themselves.
 
 # Imports
 import os
+import json
 
 from util.input import user_input, Print
 
@@ -18,8 +19,10 @@ from util.constants import (
     CONFIG_FILE
 )
 
-class Config():
+
+class Config:
     loaded: bool = False
+    name: str = ""
     visualization_engine: str = VISUALIZATION_ENGINES[0]
 
     def __init__(self):
@@ -35,14 +38,14 @@ class Config():
             self.load_config_file()
 
         self.loaded = True
-        
 
     def create_config_file(self):
         print(Print.bold(Print.yellow("Creating the configuration file...\n")))
 
         # Ask the user for the configuration settings
-        
+
         self.generate_config_file()
+        print(Print.bold(Print.green("\nConfiguration file generated.\n")))
 
     def load_config_file(self):
         print(Print.bold(Print.yellow("Loading the configuration file...")))
@@ -50,14 +53,11 @@ class Config():
         # Read the configuration settings from the configuration file
 
         with open(CONFIG_FILE, "r") as file:
-            lines = file.readlines()
+            data = json.load(file)
 
-            for line in lines:
-                key, value = line.split("=")
+            self.name = data["name"]
+            self.visualization_engine = data["visualization_engine"]
 
-                if key == "visualization_engine":
-                    self.visualization_engine = VISUALIZATION_ENGINES[int(value) - 1]
-        
         print(Print.bold(Print.green("Configuration file loaded.\n")))
 
     def print_config(self):
@@ -66,7 +66,9 @@ class Config():
 
     def generate_config_file(self):
         # Ask the user for the configuration settings
-        
+
+        name = user_input("text", "What is your name: ") or self.name
+
         visualization_engine = user_input("list",
                                           "Which visualization engine would you like to use: ",
                                           choices=[
@@ -74,42 +76,34 @@ class Config():
                                               "Matplotlib",
                                               "Seaborn"
                                           ])
-        
-        # Write the configuration settings to the configuration file
 
+        # Write the configuration settings to the configuration file in json format
+
+        self.name = name
         self.visualization_engine = VISUALIZATION_ENGINES[int(visualization_engine) - 1]
 
-        with open(CONFIG_FILE, "w") as file:
-            file.write(f"visualization_engine={visualization_engine}")
+        json_data = {
+            "name": name,
+            "visualization_engine": visualization_engine
+        }
 
-        print(Print.bold(Print.green("\nConfiguration file generated.\n")))
+        with open(CONFIG_FILE, "w") as file:
+            json.dump(json_data, file, indent=4)
+
 
     def update_config_file(self):
         if not self.loaded:
             raise Exception("The configuration file has not been loaded yet.")
-        
+
         print(Print.bold(Print.yellow("Updating the configuration file...\n")))
         # Ask the user for the configuration settings
-        
-        visualization_engine = user_input("list",
-                                          "Which visualization engine would you like to use: ",
-                                          choices=[
-                                              "Plotly (Recommended)",
-                                              "Matplotlib",
-                                              "Seaborn"
-                                          ])
-        
-        # Write the configuration settings to the configuration file
 
-        self.visualization_engine = VISUALIZATION_ENGINES[int(visualization_engine) - 1]
-
-        with open(CONFIG_FILE, "w") as file:
-            file.write(f"visualization_engine={visualization_engine}")
+        self.generate_config_file()
 
         print(Print.bold(Print.green("\nConfiguration file updated.")))
-              
+
     def config_exists(self):
         return os.path.exists(CONFIG_FILE)
-    
+
     def get_visualization_engine(self):
         return self.visualization_engine

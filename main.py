@@ -1,4 +1,4 @@
-""" main.py
+""" config.py
 
 This is the main entry point for the application. It drives the program by
 offering users a menu of options to choose from when interacting with the data
@@ -13,11 +13,11 @@ from util.input import user_input, Print
 from util.cache import Cache
 
 # Config
-from config.main import Config
+from providers.config import Config
 
 # Drivers
 from drivers.visualization.main import Visualizer
-from providers.data.main import Data
+from providers.data import Data
 
 def main():
     print(Print.bold(Print.magenta("\nWelcome to the Brainstem Orofacial Motor Behaviors program.\n")))
@@ -42,7 +42,8 @@ def main():
                             choices=[
                                 "Perform K-Means", 
                                 "Generate a Dataset", 
-                                "Visualize a Dataset", 
+                                "Visualize a Dataset",
+                                "See Data Cache",
                                 "Update Configurations",
                                 "Exit"])
 
@@ -57,15 +58,16 @@ def main():
                 drivers_cache.add("visualizer", Visualizer(config, data))
 
             drivers_cache.get("visualizer").run()
-            
         elif choice == 4:
+            data.print_data()
+        elif choice == 5:
             # Update configs
             config.update_config_file()
 
             # Clear the cache of drivers except for the data driver
             drivers_cache.clear_except(['data'])
 
-        elif choice == 5:
+        elif choice == 6:
             print(Print.bold(Print.red("\nExiting the program. Goodbye!\n")))
             break
         

@@ -1,5 +1,5 @@
 """
-visualization/main.py
+visualization/config.py
 
 This module is responsible for initiating the visualization pipeline for the
 application.
@@ -9,11 +9,14 @@ application.
 # Imports
 from time import sleep
 
-from util.input import Print
 from drivers.main import Driver
 
 # Constants
 from util.constants import VISUALIZATION_ENGINES as ENGINES
+
+# Utilities
+from util.input import Print, user_input
+
 
 class Visualizer(Driver):
     engine: str = ENGINES[0]
@@ -34,6 +37,17 @@ class Visualizer(Driver):
         
         # Run the visualization engine
         print(f"\nRunning the {self.engine} engine.")
+
+        what_to_do = user_input("list",
+                                "What would you like to do?",
+                                choices=[
+                                    "Visualize a CLUSTERED dataset",
+                                    "Plot XYZ Coordinates",
+                                    "Exit"
+                                ])
+
+        if what_to_do == 1:
+            print(Print.bold(Print.green("Visualizing a clustered dataset...")))
         
         sleep(1)
         print(Print.bold(Print.green("Visualizer finished.")))

@@ -1,5 +1,5 @@
 """
-drivers/main.py
+drivers/config.py
 
 Defines a parent class for the drivers of the program.
 """
@@ -9,8 +9,8 @@ from typing import Optional
 from util.input import Print
 
 # Config
-from config.main import Config
-from providers.data.main import Data
+from providers.config import Config
+from providers.data import Data
 
 class Driver():
     config: Optional[Config] = None
