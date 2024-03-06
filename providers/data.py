@@ -1,5 +1,5 @@
 """
-data/config.py
+providers/data.py
 
 This module is responsible for initiating the 
 data pipeline for the
@@ -37,6 +37,7 @@ from util.string_util import get_most_alike_from_list
 
 from util.directory_cache import DirectoryCache
 from util.input import Print, user_input
+from util.conversion import byte_to_mb
 
 
 class Data:
@@ -67,12 +68,26 @@ class Data:
                 self.data_cache.set(f"Coronal/Density/Genes/{column}", cor_density[column])
 
         print(Print.bold(
-            Print.green(f"Data pipeline initialized with {Print.underline(str(len(self.data_cache)))} data sets.")))
+            Print.green(f"Data pipeline initialized with {Print.underline(str(len(self.data_cache)))} data sets ("
+                        f"{format(byte_to_mb(self.get_bytes()), '.2f')} MB)")))
 
     def run(self):
         print(Print.bold(Print.green("\nRunning the data pipeline...")))
 
         # Run the data pipeline
+
+        what_to_do = user_input("list",
+                                "What would you like to do?",
+                                choices=[
+                                    "Generate a new dataset",
+                                    "Load a dataset",
+                                    "Save a dataset from memory",
+                                    "List all loaded data",
+                                    "Back"
+                                ])
+
+        if what_to_do == 1:
+            pass
 
         dataset = self.retrieve_dataset()
         print(dataset.head())
@@ -208,3 +223,22 @@ class Data:
                 # get the properties of the DataFrame
                 shape = value.shape
                 print(Print.cyan(" " * (level + 1) * 4 + f"<{shape[0]} x {shape[1]}> DataFrame"))
+
+    def get_bytes(self):
+        """
+        Get the bytes of the cache.
+
+        :return: The bytes of the cache.
+        """
+
+        dataframes = self.data_cache.get_leafs_values()
+
+        byte_sum = 0
+        for df in dataframes:
+            mem_usage = df.memory_usage(index=True)
+            if isinstance(mem_usage, int):
+                byte_sum += mem_usage
+            else:
+                byte_sum += mem_usage.sum()
+
+        return byte_sum

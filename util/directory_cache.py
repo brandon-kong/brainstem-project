@@ -9,10 +9,9 @@ other data structures.
 """
 
 # Imports
-from typing import Any, Optional, TypeVar, Generic
+from typing import Optional, TypeVar
 
 from util.cache import Cache
-from util.input import Print
 
 # Constants
 from util.constants import CACHE_SIZE
@@ -49,7 +48,6 @@ class DirectoryCache(Cache[T | dict[str, T]]):
         Gets the items in the cache.
     """
 
-    cache: dict[str, T] = {}
     size: int = CACHE_SIZE
     all_directories: list[str] = []  # To improve performance, we can store all the directories in a list
 
@@ -189,6 +187,33 @@ class DirectoryCache(Cache[T | dict[str, T]]):
 
             if isinstance(value, dict):
                 self.print_tree_recursive(value, level + 1)
+
+    def get_leafs_values(self) -> list[T]:
+        """
+        Get the leaf nodes of the cache.
+
+        :return: The leaf nodes of the cache.
+        """
+
+        return self.get_leafs_values_recursive(self.cache)
+
+    def get_leafs_values_recursive(self, data: dict[str, T]) -> list[T]:
+        """
+        Get the leaf nodes of the cache recursively.
+
+        :param data:
+        :return: The leaf nodes of the cache.
+        """
+
+        leafs = []
+
+        for key, value in data.items():
+            if isinstance(value, dict):
+                leafs.extend(self.get_leafs_values_recursive(value))
+            else:
+                leafs.append(value)
+
+        return leafs
 
     def get_leafs(self) -> list[str]:
         """

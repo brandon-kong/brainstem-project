@@ -198,6 +198,15 @@ class Cache(Generic[T]):
 
         return len(self.cache)
 
+    def get_bytes(self) -> int:
+        """
+        Gets the number of bytes that the cache is using.
+
+        :return: The number of bytes that the cache is using.
+        """
+
+        return sum([value.nbytes for value in self.cache.values()])
+
     def __len__(self):
         return self.count()
 

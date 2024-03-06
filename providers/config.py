@@ -1,8 +1,8 @@
 """
-config/config.py
+providers/config.py
 
 This driver is responsible for driving the 
-rogram by setting up basic configurations for the user
+program by setting up basic configurations for the user
 so they don't have to worry about going through the
 hassle of setting up the program themselves.
 """
@@ -107,3 +107,6 @@ class Config:
 
     def get_visualization_engine(self):
         return self.visualization_engine
+
+    def get_name(self):
+        return self.name

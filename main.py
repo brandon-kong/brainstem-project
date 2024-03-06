@@ -40,9 +40,9 @@ def main():
         choice = user_input("list",
                             "Enter the number of your choice: ",
                             choices=[
-                                "Perform K-Means", 
-                                "Generate a Dataset", 
-                                "Visualize a Dataset",
+                                "Perform K-Means",
+                                "Open Dataset Suite",
+                                "Visualize Data",
                                 "See Data Cache",
                                 "Update Configurations",
                                 "Exit"])
