@@ -19,7 +19,8 @@ from util.constants import CACHE_SIZE
 
 T = TypeVar("T")
 
-class DirectoryCache(Cache[T]):
+
+class DirectoryCache(Cache[T | dict[str, T]]):
     """
     A class that represents a cache data structure.
     
@@ -50,8 +51,10 @@ class DirectoryCache(Cache[T]):
 
     cache: dict[str, T] = {}
     size: int = CACHE_SIZE
+    all_directories: list[str] = []  # To improve performance, we can store all the directories in a list
 
     def __init__(self, size: Optional[int] = None):
+        super().__init__(size)
         if size:
             self.size = size
 
@@ -72,7 +75,7 @@ class DirectoryCache(Cache[T]):
                 data = data[k]
             else:
                 return None
-            
+
         return data
 
     def set(self, key: str, value: T):
@@ -86,7 +89,7 @@ class DirectoryCache(Cache[T]):
         :param value:
         :return:
         """
-        
+
         keys = key.split("/")
         data = self.cache
 
@@ -99,6 +102,8 @@ class DirectoryCache(Cache[T]):
 
         if len(self.cache) >= self.size:
             self.cache.popitem()
+
+        self.compute_all_directories()
 
     def has(self, key: str) -> bool:
         """
@@ -138,14 +143,7 @@ class DirectoryCache(Cache[T]):
 
         data.pop(keys[-1])
 
-    def items(self):
-        """
-        Gets the items in the cache.
-
-        :return: The items in the cache.
-        """
-
-        return self.cache.items()
+        self.compute_all_directories()
 
     def print_tree(self):
         """
@@ -182,17 +180,16 @@ class DirectoryCache(Cache[T]):
         :param level:
         :return:
         """
-        
+
         if not data or not isinstance(data, dict):
             return
-        
+
         for key, value in data.items():
             print(" " * level * 4 + key)
 
             if isinstance(value, dict):
                 self.print_tree_recursive(value, level + 1)
 
-    
     def get_leafs(self) -> list[str]:
         """
         Get the leaf nodes of the cache.
@@ -201,7 +198,7 @@ class DirectoryCache(Cache[T]):
         """
 
         return self.get_leafs_recursive(self.cache)
-    
+
     def get_leafs_recursive(self, data: dict[str, T], path: str = "") -> list[str]:
         """
         Get the leaf nodes of the cache recursively.
@@ -220,9 +217,63 @@ class DirectoryCache(Cache[T]):
                 leafs.append(f"{path}/{key}")
 
         return leafs
-    
+
     def count(self):
         return len(self.get_leafs())
-    
+
+    def is_leaf(self, key: str) -> bool:
+        """
+        Check if the key is a leaf node.
+
+        :param key:
+        :return: True if the key is a leaf node, False otherwise.
+        """
+
+        return key in self.get_leafs()
+
+    def get_all_directories(self) -> list[str]:
+        """
+        Get all the directories in the cache.
+
+        :return: All the directories in the cache.
+        """
+
+        return self.all_directories
+
+    def compute_all_directories(self):
+        """
+        Get all the directories in the cache.
+
+        :return: All the directories in the cache.
+        """
+
+        self.all_directories = self.get_all_directories_recursive(self.cache)
+
+    def get_all_directories_recursive(self, data: dict[str, T], path: str = "") -> list[str]:
+        """
+        Get all the directories in the cache recursively.
+
+        :param data:
+        :param path:
+        :return: All the directories in the cache.
+        """
+
+        directories = []
+
+        for key, value in data.items():
+            # Include all files and directories
+            new_path = f"{path}/" if path else path
+            if new_path.startswith("/"):
+                new_path = new_path[1:]
+
+            new_dir = f"{new_path}{key}"
+
+            if not isinstance(value, dict):
+                directories.append(new_dir)
+            else:
+                directories.extend(self.get_all_directories_recursive(value, new_dir))
+
+        return directories
+
     def __len__(self):
         return self.count()

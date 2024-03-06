@@ -14,6 +14,7 @@ CLUSTER_LABEL_COLUMN_PREFIX = "Cluster_"
 # CONFIG
 CONFIG_FILE = "config.ini"
 
+
 # TERMINAL COLORS
 class TERMINAL_COLORS():
     ENDC = '\033[0m'
@@ -38,21 +39,32 @@ class TERMINAL_COLORS():
     BOLD_MAGENTA = '\033[1;35m'
     BOLD_CYAN = '\033[1;36m'
     BOLD_WHITE = '\033[1;37m'
-    
+
+
 # CACHE
 CACHE_SIZE = 256
 
 # DATA SETS
+# MASTER: Reserved Key for the original data
+
+MASTER_DATASET = "MASTER"
+
 DATA_SETS = {
-   "Coronal": {
-       "Density": {
-           "No_NaN": "data/parent/[4k]_DenCor_No_NaN.csv",
-           "NewDenC": "data/parent/[4k]_NewDenCor.csv",
-       }
-   },
-   "Sagittal": {
-       "Density": {
-           "Test": "data/parent/[4k]_DenCor_No_NaN.csv",
-       }
-   }
+    "NonGeneColumns": "data/parent/NonGeneColumns.csv",
+    "Coronal": {
+        "Density": {
+            MASTER_DATASET: "data/parent/[4k]_NewDenCor.csv",
+            "No_NaN": "data/parent/[4k]_DenCor_No_NaN.csv",
+            "NewDenC": "data/parent/[4k]_NewDenCor.csv",
+        }
+    },
+    "Sagittal": {
+        "Density": {
+            "Test": "data/parent/[4k]_DenCor_No_NaN.csv",
+        }
+    }
 }
+
+NON_GENE_COLUMNS = ["index", "X", "Y", "Z", "Structure-ID"]
+
+MAX_DIRECTORY_PRINT_DEPTH = 20  # The maximum depth to print the directories in the cache
