@@ -1,5 +1,5 @@
 {
     "name": "Brandon",
-    "load_genes_at_startup": true,
+    "load_genes_at_startup": false,
     "visualization_engine": 1
 }
