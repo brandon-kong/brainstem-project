@@ -10,7 +10,18 @@ from typing import Any, Optional, TypeVar, Generic
 
 # Constants
 from util.constants import CACHE_SIZE
-from util.input import Print
+
+# Utilities
+
+from util.print import (
+    bold,
+    primary,
+    underline,
+    error,
+    warning,
+    success,
+    info
+)
 
 T = TypeVar("T")
 
@@ -173,7 +184,7 @@ class Cache(Generic[T]):
 
         for key, value in data.items():
             if isinstance(value, dict):
-                print(Print.cyan("\t" * level + key))
+                print(info("\t" * level + key))
                 self.print_tree_recursive(value, level + 1)
             else:
                 # see if key is splittable
@@ -181,7 +192,7 @@ class Cache(Generic[T]):
                     new_key = key.split("/")[0]
 
                     # print the key
-                    print(Print.cyan("\t" * level + new_key))
+                    print(info("\t" * level + new_key))
 
                     # recurse through the rest of the key
                     self.print_tree_recursive({"/".join(key.split("/")[1:]): value}, level + 1)

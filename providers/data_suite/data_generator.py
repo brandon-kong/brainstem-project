@@ -14,8 +14,16 @@ from util.constants import DATA_SETS
 
 # Utilities
 from util.data import contains_nan
-from util.input import Print, user_input
+from util.input import user_input
 from util.string_util import get_most_alike_from_list
+from util.print import (
+    error,
+    success,
+    bold,
+    info,
+    underline,
+    warning
+)
 
 # Providers
 from providers.config import Config
@@ -31,7 +39,7 @@ class DataGenerator:
         self.init()
 
     def init(self):
-        print(Print.bold(Print.yellow("\nInitializing the data generator...")))
+        print(info("\nInitializing the data generator..."))
 
         dataset = self.retrieve_dataset()
         print(dataset.head())
@@ -57,13 +65,13 @@ class DataGenerator:
         elif how_to_use_dataset == 4:
             return
 
-        print(Print.bold(Print.green(f"Visualizer initialized with {Print.underline(self.engine)}.")))
+        print(success(f"Visualizer initialized"))
 
     def run(self):
-        print(Print.bold(Print.green("Running the data generator...")))
+        print(info("Running the data generator..."))
 
         # Run the visualization engine
-        print(f"\nRunning the {self.engine} engine.")
+        print(f"\nRunning engine.")
 
         what_to_do = user_input("list",
                                 "What would you like to do?",
@@ -74,10 +82,10 @@ class DataGenerator:
                                 ])
 
         if what_to_do == 1:
-            print(Print.bold(Print.green("Visualizing a clustered dataset...")))
+            print(info("Visualizing a clustered dataset..."))
 
         sleep(1)
-        print(Print.bold(Print.green("Visualizer finished.")))
+        print(success("Visualizer finished."))
 
     def retrieve_dataset(self):
         """
@@ -95,16 +103,16 @@ class DataGenerator:
             # If the data set is not found, try to find the most alike data set
             all_directories = self.data_driver.data_cache.get_all_directories()
             most_alike = get_most_alike_from_list(choice, all_directories)
-            print(Print.bold(Print.red(f"Data set {choice} not found.")))
-            print(Print.bold(Print.red(f"Did you mean {most_alike}?")))
+            print(error(f"Data set {choice} not found."))
+            print(warning(f"Did you mean {most_alike}?"))
             choice = user_input("text", "Enter the name of the data set: ")
 
-        print(Print.bold(Print.green(f"\nLoading data set {choice}...")))
+        print(info(f"\nLoading data set {choice}..."))
 
         dataset = self.data_driver.data_cache.get(choice)
 
         if contains_nan(dataset):
-            print(Print.yellow("Warning: ") + Print.underline(Print.yellow(choice)) + Print.yellow(
+            print(warning("Warning: ") + underline(warning(choice)) + warning(
                 " contains NaN values.\n"))
 
         return self.data_driver.data_cache.get(choice)

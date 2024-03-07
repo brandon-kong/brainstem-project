@@ -11,7 +11,11 @@ hassle of setting up the program themselves.
 import os
 import json
 
-from util.input import user_input, Print
+from util.input import (
+    get_choice_input,
+    get_yes_no_input,
+    get_text_input
+)
 
 # Constants
 from util.constants import (
@@ -30,20 +34,51 @@ from util.print import (
 )
 
 
+CONFIGURATIONS: dict[
+    str,
+    dict[
+        str,
+        str | bool | list[str]
+    ]
+] = {
+    "name": {
+        "message": "What is your name? ",
+        "type": "text",
+        "default": None
+    },
+    "save_generated_data_path": {
+        "message": "Where would you like to save the generated data? ",
+        "type": "text",
+        "default": SAVE_GENERATED_DATA_PATH
+    },
+    "load_genes_at_startup": {
+        "message": "Would you like to load genes at startup? ",
+        "type": "yes_no",
+        "default": False
+    },
+    "visualization_engine": {
+        "message": "Which visualization engine would you like to use? ",
+        "type": "list",
+        "choices": VISUALIZATION_ENGINES,
+        "default": VISUALIZATION_ENGINES[0]
+    }
+}
+
 class Config:
-    def __init__(self):
-        self.loaded: bool = False
-        self.name: str = ""
-        self.save_generated_data_path: str = SAVE_GENERATED_DATA_PATH
-        self.load_genes_at_startup: bool = False
-        self.visualization_engine: str = ""
+    def __init__(self, config_file: str = CONFIG_FILE):
+        self.configs = {}
+        self.config_file: str = config_file
+
+        self.loaded = False
+        self.changed = False
 
         self.init()
 
     def init(self):
         print(info("Initializing the configuration..."))
 
-        if not self.config_exists():
+        if not Config.config_exists():
+            print(warning("No configuration file found."))
             self.create_config_file()
         else:
             # Load the configuration file to get the settings
@@ -52,93 +87,59 @@ class Config:
         self.loaded = True
 
     def create_config_file(self):
-        print(info("Creating the configuration file...\n"))
+        default_config = {}
 
-        # Ask the user for the configuration settings
+        for key, value in CONFIGURATIONS.items():
+            if key not in default_config:
+                default_config[key] = value["default"]
 
-        self.generate_config_file()
-        print(Print.bold(Print.green("\nConfiguration file generated.\n")))
+            if value["type"] == "text":
+                default_config[key] = get_text_input(value["message"], default=value["default"])
+
+            elif value["type"] == "yes_no":
+                default_config[key] = get_yes_no_input(value["message"])
+
+            elif value["type"] == "list":
+                default_config[key] = get_choice_input(
+                    value["message"],
+                    value["choices"],
+                    can_go_back=False
+                )[1]
+
+        self.configs = default_config
+
+        with open(self.config_file, 'w') as f:
+            json.dump(default_config, f, indent=4)
+        return default_config
 
     def load_config_file(self):
-        print(info("Loading the configuration file..."))
+        with open(self.config_file, 'r') as f:
+            self.configs = json.load(f)
 
-        # Read the configuration settings from the configuration file
+    def get(self, key, default=None):
+        return self.configs.get(key, default)
 
-        with open(CONFIG_FILE, "r") as file:
-            data = json.load(file)
+    def set(self, key, value):
+        old_value = self.configs.get(key)
+        self.configs[key] = value
 
-            self.name = data["name"]
-            self.load_genes_at_startup = data["load_genes_at_startup"]
-            self.visualization_engine = data["visualization_engine"]
+        if old_value != value:
+            self.changed = True
 
-        print(success("Configuration file loaded.\n"))
+    def save(self):
+        if not self.changed:
+            return
 
-    def print_config(self):
-        print(Print.bold(Print.cyan("Configuration settings:")))
-        print(Print.cyan(f"\tVisualization Engine: {self.visualization_engine}"))
+        with open(self.config_file, 'w') as f:
+            json.dump(self.configs, f, indent=4)
 
-    def generate_config_file(self):
-        # Ask the user for the configuration settings
-
-        name = user_input("text", "What is your name: ") or self.name
-
-        save_generated_data_path = user_input("text", f"Where would you like to save any generated data (default: {self.save_generated_data_path}):") or self.save_generated_data_path
-
-        load_genes_at_startup = user_input("list",
-                                            "Would you like to load the genes at startup: ",
-                                            choices=[
-                                                "Yes",
-                                                "No"
-                                            ])
-
-        visualization_engine = user_input("list",
-                                          "Which visualization engine would you like to use: ",
-                                          choices=[
-                                              "Plotly (Recommended)",
-                                              "Matplotlib",
-                                              "Seaborn"
-                                          ])
-
-        # Write the configuration settings to the configuration file in json format
-
-        self.name = name
-        self.save_generated_data_path = save_generated_data_path
-        self.load_genes_at_startup = load_genes_at_startup == 1
-        self.visualization_engine = VISUALIZATION_ENGINES[int(visualization_engine) - 1]
-
-        json_data = {
-            "name": name,
-            "save_generated_data_path": save_generated_data_path,
-            "load_genes_at_startup": self.load_genes_at_startup,
-            "visualization_engine": visualization_engine
-        }
-
-        with open(CONFIG_FILE, "w") as file:
-            json.dump(json_data, file, indent=4)
-
-
-    def update_config_file(self):
-        if not self.loaded:
-            raise Exception("The configuration file has not been loaded yet.")
-
-        print(Print.bold(Print.yellow("Updating the configuration file...\n")))
-        # Ask the user for the configuration settings
-
-        self.generate_config_file()
-
-        print(Print.bold(Print.green("\nConfiguration file updated.")))
-
-    def config_exists(self):
+    @staticmethod
+    def config_exists():
         return os.path.exists(CONFIG_FILE)
 
-    def get_visualization_engine(self):
-        return self.visualization_engine
+    def __del__(self):
+        if not self.changed:
+            return
 
-    def get_name(self):
-        return self.name
-
-    def get_load_genes_at_startup(self):
-        return self.load_genes_at_startup
-    
-    def get_save_generate(self):
-        return self.save_generated_data_path
+        self.save()
+        print(success("Configuration saved."))

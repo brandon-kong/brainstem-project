@@ -20,7 +20,7 @@ def primary(message: str) -> str:
     :return:
     """
 
-    return COLORS.MAGENTA + message + COLORS.RESET
+    return COLORS.MAGENTA + str(message) + COLORS.RESET
 
 
 def error(message: str) -> str:
@@ -31,7 +31,7 @@ def error(message: str) -> str:
     :return:
     """
 
-    return COLORS.RED + message + COLORS.RESET
+    return COLORS.RED + str(message) + COLORS.RESET
 
 
 def success(message: str) -> str:
@@ -42,7 +42,7 @@ def success(message: str) -> str:
     :return:
     """
 
-    return COLORS.GREEN + message + COLORS.RESET
+    return COLORS.GREEN + str(message) + COLORS.RESET
 
 
 def info(message: str) -> str:
@@ -53,7 +53,7 @@ def info(message: str) -> str:
     :return:
     """
 
-    return COLORS.CYAN + message + COLORS.RESET
+    return COLORS.CYAN + str(message) + COLORS.RESET
 
 
 def warning(message: str) -> str:
@@ -64,7 +64,7 @@ def warning(message: str) -> str:
     :return:
     """
 
-    return COLORS.YELLOW + message + COLORS.RESET
+    return COLORS.YELLOW + str(message) + COLORS.RESET
 
 
 def bold(message: str) -> str:
@@ -75,7 +75,7 @@ def bold(message: str) -> str:
     :return:
     """
 
-    return COLORS.BOLD + message + COLORS.RESET
+    return COLORS.BOLD + str(message) + COLORS.RESET
 
 
 def underline(message: str) -> str:
@@ -86,4 +86,4 @@ def underline(message: str) -> str:
     :return:
     """
 
-    return COLORS.UNDERLINE + message + COLORS.RESET
+    return COLORS.UNDERLINE + str(message) + COLORS.RESET

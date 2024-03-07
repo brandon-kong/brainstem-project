@@ -8,9 +8,18 @@ the user.
 """
 
 # Imports
+from typing import Optional, List, Tuple
 
-from .constants import TERMINAL_COLORS as COLORS
-from typing import Optional, List
+# Constants
+from util.constants import BACK_KEYWORD
+
+# Utilities
+from util.print import (
+    primary,
+    error,
+    success,
+    info,
+)
 
 
 def user_input(input_type: str, message: str, choices: Optional[List[str]] = None) -> str | int:
@@ -41,7 +50,7 @@ def list_input(message: str, choices: list[str]) -> int:
     print("")
 
     for i, choice in enumerate(choices):
-        print(Print.cyan(f"\t{i + 1}. {choice}"))
+        print(info(f"\t{i + 1}. {choice}"))
 
     try:
         # handle 0-based index
@@ -55,7 +64,7 @@ def list_input(message: str, choices: list[str]) -> int:
         return int(choice)
 
     except (ValueError, IndexError):
-        print(Print.bold(Print.red("\nInvalid choice. Please try again.\n")))
+        print(error("\nInvalid choice. Please try again.\n"))
 
         return list_input(message, choices)
 
@@ -71,74 +80,117 @@ def text_input(message: str) -> str:
     return input(message)
 
 
-class Print:
-    def bold(message: str):
-        return f"{COLORS.BOLD}{message}{COLORS.ENDC}"
+# Past this point, I have updated better implementation
 
-    def underline(message: str):
-        return f"{COLORS.UNDERLINE}{message}{COLORS.ENDC}"
-
-    def black(message: str):
-        return f"{COLORS.BLACK}{message}{COLORS.ENDC}"
-
-    def red(message: str):
-        return f"{COLORS.RED}{message}{COLORS.ENDC}"
-
-    def green(message: str):
-        return f"{COLORS.GREEN}{message}{COLORS.ENDC}"
-
-    def yellow(message: str):
-        return f"{COLORS.YELLOW}{message}{COLORS.ENDC}"
-
-    def blue(message: str):
-        return f"{COLORS.BLUE}{message}{COLORS.ENDC}"
-
-    def magenta(message: str):
-        return f"{COLORS.MAGENTA}{message}{COLORS.ENDC}"
-
-    def cyan(message: str):
-        return f"{COLORS.CYAN}{message}{COLORS.ENDC}"
-
-    def white(message: str):
-        return f"{COLORS.WHITE}{message}{COLORS.ENDC}"
-
-
-def get_text_input(message: str) -> str:
+def get_yes_no_input(message: str) -> bool:
     """
-    Gets a text input from the user and returns it.
+    Gets a yes/no input from the user and returns it.
 
     :param message:
     :return:
     """
 
-    return input(message)
+    yes_alias = ["yes", "y"]
+    no_alias = ["no", "n"]
 
-def get_list_input(message: str, choices: list[str]) -> int:
+    print(f"{message} (yes/no): ")
+    choice = input().lower()
+
+    while choice not in yes_alias + no_alias:
+        print(error("Invalid choice. Please try again."))
+        choice = input().lower()
+
+    return choice in yes_alias
+
+def get_text_input(message: str, default=None) -> str:
     """
-    Gets a list input from the user and returns it.
+    Gets input from the user and returns it based on the input type.
 
     :param message:
     :param choices:
     :return:
     """
 
-    print("")
+    print(message)
+    choice = input()
+
+    if not choice and default:
+        return default
+
+    while not choice:
+        print(error("Invalid choice. Please try again."))
+        choice = input()
+
+    return choice
+
+def get_int_input(message: str) -> int:
+    """
+    Gets an integer input from the user and returns it.
+
+    :param message:
+    :return:
+    """
+
+    print(message)
+    choice = input()
+
+    while not choice.isdigit():
+        print(error("Invalid choice. Please try again."))
+        choice = input()
+
+    return int(choice)
+
+
+def get_float_input(message: str) -> float:
+    """
+    Gets a float input from the user and returns it.
+
+    :param message:
+    :return:
+    """
+
+    print(message)
+    choice = input()
+
+    while not choice.replace(".", "", 1).isdigit():
+        print(error("Invalid choice. Please try again."))
+        choice = input()
+
+    return float(choice)
+
+
+def get_choice_input(
+        message: str,
+        choices: list[str],
+        can_go_back: bool = True
+) -> Tuple[int, str, bool]:
+    """
+    Gets a choice input from the user and returns it.
+
+    :param message:
+    :param choices:
+    :param can_go_back:
+    :return:
+    """
+
+    print(message)
 
     for i, choice in enumerate(choices):
-        print(Print.cyan(f"\t{i + 1}. {choice}"))
+        print(info(f"\t{i + 1}. {choice}"))
 
-    try:
-        # handle 0-based index
-        print()
-        choice = input(message)
+    if can_go_back:
+        print(info(f"\t[{BACK_KEYWORD}] Back"))
 
-        if int(choice) <= 0:
-            raise ValueError
+    choice = input()
 
-        val = choices[int(choice) - 1]
-        return int(choice)
+    while not choice.isdigit() or int(choice) < 1 or int(choice) > len(choices):
+        if choice.lower() == BACK_KEYWORD.lower() and can_go_back:
+            return -1, choice, True
+        print(error("Invalid choice. Please try again."))
+        choice = input()
 
-    except (ValueError, IndexError):
-        print(Print.bold(Print.red("\nInvalid choice. Please try again.\n")))
+    # New line for readability
+    print()
 
-        return list_input(message, choices)
+    return int(choice), choices[int(choice) - 1], choice == BACK_KEYWORD
+

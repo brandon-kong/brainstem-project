@@ -68,3 +68,5 @@ STRUCTURE_IDS = [
 ]
 
 SAVE_GENERATED_DATA_PATH = "data/generated/"
+
+BACK_KEYWORD = "back"  # The keyword to go back to the previous menu

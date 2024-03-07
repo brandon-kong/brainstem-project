@@ -41,12 +41,14 @@ from util.data import (
 
 from util.string_util import get_most_alike_from_list
 
+from util.cache import Cache
 from util.directory_cache import DirectoryCache
-from util.input import Print, user_input
+from util.input import user_input
 from util.conversion import byte_to_mb
 
 from util.print import (
     bold,
+    primary,
     underline,
     error,
     warning,
@@ -57,6 +59,7 @@ from util.print import (
 
 class Data:
     def __init__(self, config=None):
+        self.cache = Cache[object]()
         self.data_cache = DirectoryCache()
         self.config = config
         self.init()
@@ -70,7 +73,7 @@ class Data:
         # Now that the data is loaded, we can add individual genes into the cache
         # only if the config allows it
 
-        if self.config.get_load_genes_at_startup():
+        if self.config.get("load_genes_at_startup"):
             print(info("Loading gene data..."))
             self.load_structure_ids()
             self.load_single_genes()
@@ -80,8 +83,8 @@ class Data:
                     info("(" + format(byte_to_mb(self.get_bytes()), '.2f') + " MB)") + "\n"))
 
     def run(self):
-        print(info("\nRunning the data pipeline..."))
-        print("Welcome to the data pipeline. What would you like to do with our data?")
+        print(info("Running the data pipeline..."))
+        print(primary("Welcome to the data pipeline. What would you like to do with our data?"))
 
         # Run the data pipeline
 
@@ -111,7 +114,7 @@ class Data:
             elif what_to_do == 6:
                 break
 
-        print(Print.bold(Print.green("\nData pipeline finished.\n")))
+        print(success("\nData pipeline finished.\n"))
 
     def load_single_genes(self):
         # CORONAL DENSITY GENES
@@ -154,7 +157,7 @@ class Data:
         :return:
         """
 
-        print(Print.bold(Print.green(f"\nData Cache ({format(byte_to_mb(self.get_bytes()), '.2f')} MB):")))
+        print(info(f"\nData Cache ({format(byte_to_mb(self.get_bytes()), '.2f')} MB):\n"))
         self.print_tree()
 
     def retrieve_dataset(self):
@@ -173,16 +176,16 @@ class Data:
             # If the data set is not found, try to find the most alike data set
             all_directories = self.data_cache.get_all_directories()
             most_alike = get_most_alike_from_list(choice, all_directories)
-            print(Print.bold(Print.red(f"Data set {choice} not found.")))
-            print(Print.bold(Print.red(f"Did you mean {most_alike}?")))
+            print(error(f"Data set {choice} not found."))
+            print(warning(f"Did you mean {most_alike}?"))
             choice = user_input("text", "Enter the name of the data set: ")
 
-        print(Print.bold(Print.green(f"\nLoading data set {choice}...")))
+        print(info(f"\nLoading data set {choice}..."))
 
         dataset = self.data_cache.get(choice)
 
         if contains_nan(dataset):
-            print(Print.yellow("Warning: ") + Print.underline(Print.yellow(choice)) + Print.yellow(
+            print(warning("Warning: ") + underline(warning(choice)) + warning(
                 " contains NaN values.\n"))
 
         return self.data_cache.get(choice)
@@ -239,7 +242,7 @@ class Data:
             else:
                 # get the properties of the DataFrame
                 shape = value.shape
-                print(Print.cyan(" " * (level + 1) * 4 + f"<{shape[0]} x {shape[1]}> DataFrame"))
+                print(info(" " * (level + 1) * 4 + f"<{shape[0]} x {shape[1]}> DataFrame"))
 
     def save_data_from_memory(self):
         """
@@ -257,25 +260,25 @@ class Data:
             # If the data set is not found, try to find the most alike data set
             all_directories = self.data_cache.get_all_directories()
             most_alike = get_most_alike_from_list(choice, all_directories)
-            print(Print.bold(Print.red(f"Data set {choice} not found.")))
-            print(Print.bold(Print.red(f"Did you mean {most_alike}?")))
+            print(error(f"Data set {choice} not found."))
+            print(warning(f"Did you mean {most_alike}?"))
             choice = user_input("text", "Enter the name of the data set: ")
 
         name_of_file = user_input("text", "Enter the name of the file to save the data set to: ")
 
         while name_of_file == "":
-            print(Print.bold(Print.red("The name of the file cannot be empty.")))
+            print(error("The name of the file cannot be empty."))
             name_of_file = user_input("text", "Enter the name of the file to save the data set to: ")
 
         file_path = self.config.get_save_generate() + name_of_file + ".csv"
 
-        print(Print.bold(Print.green(f"\nSaving data set {file_path}...")))
+        print(info(f"\nSaving data set {file_path}..."))
 
         dataset = self.data_cache.get(choice)
 
         save_csv_file(dataset, file_path)
 
-        print(Print.bold(Print.green(f"Data set {choice} saved.")))
+        print(success(f"Data set {choice} saved."))
 
     def unload_data_from_memory(self):
         """
@@ -293,16 +296,16 @@ class Data:
             # If the data set is not found, try to find the most alike data set
             all_directories = self.data_cache.get_all_directories()
             most_alike = get_most_alike_from_list(choice, all_directories)
-            print(Print.bold(Print.red(f"Data set {choice} not found.")))
-            print(Print.bold(Print.red(f"Did you mean {most_alike}?")))
+            print(error(f"Data set {choice} not found."))
+            print(warning(f"Did you mean {most_alike}?"))
             choice = user_input("text", "Enter the name of the data set you want to unload: ")
 
-        print(Print.bold(Print.green(f"\nUnloading data set {choice}...")))
+        print(info(f"\nUnloading data set {choice}..."))
 
         self.data_cache.remove(choice)
 
-        print(Print.bold(Print.green(f"Data set {choice} unloaded. ("
-                                     f"{format(byte_to_mb(self.get_bytes()), '.2f')} MB)\n")))
+        print(success(f"Data set {choice} unloaded. ("
+                      f"{format(byte_to_mb(self.get_bytes()), '.2f')} MB)\n"))
 
     def get_bytes(self):
         """

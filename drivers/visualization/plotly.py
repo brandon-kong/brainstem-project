@@ -11,7 +11,17 @@ from drivers.visualization.main import Visualizer
 # Constants
 
 # Utilities
-from util.input import Print, user_input
+from util.input import user_input
+
+from util.print import (
+    bold,
+    primary,
+    underline,
+    error,
+    warning,
+    success,
+    info
+)
 
 class Plotly:
     """
@@ -39,7 +49,7 @@ class Plotly:
         """
         Runs the Plotly visualization engine.
         """
-        print(Print.bold(Print.green("Running the Plotly engine.")))
+        print(info("Running the Plotly engine."))
 
         what_to_do = user_input("list",
                                 "What would you like to do?",
@@ -50,6 +60,6 @@ class Plotly:
                                 ])
 
         if what_to_do == 1:
-            print(Print.bold(Print.green("Visualizing a clustered dataset...")))
+            print(info("Visualizing a clustered dataset..."))
 
-        print(Print.bold(Print.green("Plotly engine finished.")))
+        print(success("Plotly engine finished."))

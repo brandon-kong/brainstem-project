@@ -15,8 +15,17 @@ from drivers.main import Driver
 from util.constants import VISUALIZATION_ENGINES as ENGINES
 
 # Utilities
-from util.input import Print, user_input
+from util.input import user_input
 
+from util.print import (
+    bold,
+    primary,
+    underline,
+    error,
+    warning,
+    success,
+    info
+)
 
 class Visualizer(Driver):
     engine: str = ENGINES[0]
@@ -25,15 +34,15 @@ class Visualizer(Driver):
         super().__init__(config, data_driver)
 
     def init(self):
-        print(Print.bold(Print.yellow("\nInitializing the visualizer...")))
+        print(info("Initializing the visualizer..."))
         
         sleep(1)
         self.engine = self.config.get_visualization_engine()
         
-        print(Print.bold(Print.green(f"Visualizer initialized with {Print.underline(self.engine)}.")))
+        print(success(f"Visualizer initialized with {underline(self.engine)}."))
 
     def run(self):  
-        print(Print.bold(Print.green("Running the visualizer...")))
+        print(info("Running the visualizer..."))
         
         # Run the visualization engine
         print(f"\nRunning the {self.engine} engine.")
@@ -47,7 +56,7 @@ class Visualizer(Driver):
                                 ])
 
         if what_to_do == 1:
-            print(Print.bold(Print.green("Visualizing a clustered dataset...")))
+            print(info("Visualizing a clustered dataset..."))
         
         sleep(1)
-        print(Print.bold(Print.green("Visualizer finished.")))
+        print(success("Visualizer finished."))
