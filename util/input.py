@@ -101,8 +101,7 @@ def get_yes_no_input(message: str) -> bool:
 
     return choice in yes_alias
 
-
-def get_text_input(message: str, default=None) -> str:
+def get_text_input(message: str, default:Optional[str] = None) -> str:
     """
     Gets input from the user and returns it based on the input type.
 
@@ -121,6 +120,29 @@ def get_text_input(message: str, default=None) -> str:
         choice = input()
 
     return choice
+
+def get_text_input_with_back(message: str, default:Optional[str] = None, can_go_back: bool = True) -> Tuple[str, bool]:
+    """
+    Gets input from the user and returns it based on the input type.
+
+    :param message:
+    :param choices:
+    :return:
+    """
+
+    choice = input(message)
+
+    if can_go_back and choice.lower() == BACK_KEYWORD.lower():
+        return BACK_KEYWORD, True
+
+    if not choice and default:
+        return default, False
+
+    while not choice:
+        print(error("Invalid choice. Please try again."))
+        choice = input(), False
+
+    return choice, False
 
 def get_int_input(message: str) -> int:
     """

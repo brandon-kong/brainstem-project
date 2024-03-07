@@ -21,6 +21,8 @@ from providers.config import Config
 
 # Drivers
 from providers.data_suite.data_generator import DataGenerator
+from providers.data_suite.data_saver import DataSaver
+
 from util.cache import Cache
 
 # Constants
@@ -57,7 +59,8 @@ from util.print import (
     error,
     warning,
     success,
-    info
+    info,
+    horizontal_line
 )
 
 
@@ -103,7 +106,7 @@ class Data:
             self.unload_data_from_memory()
 
         def save_dataset():
-            self.save_data_from_memory()
+            DataSaver(self.config, self).run()
 
         def list_all_loaded_data():
             self.print_data()
@@ -116,7 +119,7 @@ class Data:
             "List all loaded data": list_all_loaded_data,
         }
         while True:
-            ans_int, ans, did_go_back = get_choice_input("What would you like to do: ",
+            ans_int, ans, did_go_back = get_choice_input("What would you like to do with the data pipeline: ",
                                                          choices=list(ans_actions.keys()),
                                                          can_go_back=True
                                                          )
@@ -170,7 +173,9 @@ class Data:
         """
 
         print(info(f"Data Cache ({format(byte_to_mb(self.get_bytes()), '.2f')} MB):\n"))
+        horizontal_line()
         self.print_tree()
+        horizontal_line()
         print()
 
     def retrieve_dataset(self):
@@ -267,7 +272,7 @@ class Data:
         print("Which data set would you like to save?")
         self.print_data()
 
-        choice = get_text_input("text", "Enter the name of the data set: ")
+        choice = get_text_input("Enter the name of the data set: ")
 
         while not self.data_cache.has(choice) or isinstance(self.data_cache.get(choice), dict):
             # If the data set is not found, try to find the most alike data set
@@ -283,7 +288,7 @@ class Data:
             print(error("The name of the file cannot be empty."))
             name_of_file = get_text_input("Enter the name of the file to save the data set to: ")
 
-        file_path = self.config.get_save_generate() + name_of_file + ".csv"
+        file_path = self.config.get('save_generated_data_path') + name_of_file + ".csv"
 
         print(info(f"\nSaving data set {file_path}..."))
 
@@ -291,7 +296,7 @@ class Data:
 
         save_csv_file(dataset, file_path)
 
-        print(success(f"Data set {choice} saved."))
+        print(success(f"Data set {choice} saved.\n"))
 
     def unload_data_from_memory(self):
         """
@@ -303,7 +308,7 @@ class Data:
         print("Which data set would you like to unload?")
         self.print_data()
 
-        choice = get_text_input("Enter the name of the data set: ")
+        choice = get_text_input("Enter the path of the data set you want to save: ")
 
         while not self.data_cache.has(choice) or isinstance(self.data_cache.get(choice), dict):
             # If the data set is not found, try to find the most alike data set

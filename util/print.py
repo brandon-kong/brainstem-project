@@ -6,6 +6,7 @@ output to the user.
 """
 
 # Imports
+import os
 from typing import Optional
 
 # Constants
@@ -87,3 +88,16 @@ def underline(message: str) -> str:
     """
 
     return COLORS.UNDERLINE + str(message) + COLORS.RESET
+
+def clear_screen():
+    """
+    Clears the terminal screen.
+    """
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def horizontal_line():
+    """
+    Prints a horizontal line.
+    """
+    terminal_size = os.get_terminal_size()
+    print("=" * terminal_size.columns)
