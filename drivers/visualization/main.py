@@ -37,7 +37,7 @@ class Visualizer(Driver):
         print(info("Initializing the visualizer..."))
         
         sleep(1)
-        self.engine = self.config.get_visualization_engine()
+        self.engine = self.config.get('visualization_engine')
         
         print(success(f"Visualizer initialized with {underline(self.engine)}."))
 
