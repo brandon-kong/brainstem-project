@@ -9,8 +9,6 @@ Machine-Learning in Brainstem Orofacial Motor Behaviors.
 """
 
 # Imports
-from util.input import user_input, Print
-from util.cache import Cache
 
 # Config
 from providers.config import Config
@@ -19,8 +17,20 @@ from providers.config import Config
 from drivers.visualization.main import Visualizer
 from providers.data import Data
 
+# Utilities
+from util.input import user_input, Print
+from util.cache import Cache
+from util.print import (
+    primary,
+    bold,
+    error,
+    warning,
+    success
+)
+
+
 def main():
-    print(Print.bold(Print.magenta("\nWelcome to the Brainstem Orofacial Motor Behaviors program.\n")))
+    print(bold(primary("\nWelcome to the Brainstem Orofacial Motor Behaviors program.\n")))
 
     config = Config()
     data = Data(config)
@@ -35,7 +45,7 @@ def main():
     
     # Program loop
     while True:        
-        print(f"Please choose from the following options:\n")
+        print(f"What would you like to do with our program?")
 
         choice = user_input("list",
                             "Enter the number of your choice: ",
@@ -49,7 +59,7 @@ def main():
         # New line for readability
 
         if choice == 1:            
-            print(Print.bold(Print.green("K-Means")))
+            print(success("K-Means"))
         elif choice == 2:
             data.run()
         elif choice == 3:
@@ -64,10 +74,10 @@ def main():
             # Clear the cache of drivers except for the data driver
             drivers_cache.clear_except(['data'])
 
-            print(Print.yellow("Some configurations may require you to restart the program to take effect."))
+            print(warning("Some configurations may require you to restart the program to take effect."))
 
         elif choice == 5:
-            print(Print.bold(Print.red("\nExiting the program. Goodbye!\n")))
+            print(bold(error("\nExiting the program. Goodbye!")))
             break
         
         # New line for readability

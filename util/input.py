@@ -38,6 +38,8 @@ def list_input(message: str, choices: list[str]) -> int:
     :return:
     """
 
+    print("")
+
     for i, choice in enumerate(choices):
         print(Print.cyan(f"\t{i + 1}. {choice}"))
 
@@ -51,13 +53,12 @@ def list_input(message: str, choices: list[str]) -> int:
 
         val = choices[int(choice) - 1]
         return int(choice)
-    
+
     except (ValueError, IndexError):
         print(Print.bold(Print.red("\nInvalid choice. Please try again.\n")))
 
         return list_input(message, choices)
-    
-    
+
 
 def text_input(message: str) -> str:
     """
@@ -100,3 +101,44 @@ class Print:
 
     def white(message: str):
         return f"{COLORS.WHITE}{message}{COLORS.ENDC}"
+
+
+def get_text_input(message: str) -> str:
+    """
+    Gets a text input from the user and returns it.
+
+    :param message:
+    :return:
+    """
+
+    return input(message)
+
+def get_list_input(message: str, choices: list[str]) -> int:
+    """
+    Gets a list input from the user and returns it.
+
+    :param message:
+    :param choices:
+    :return:
+    """
+
+    print("")
+
+    for i, choice in enumerate(choices):
+        print(Print.cyan(f"\t{i + 1}. {choice}"))
+
+    try:
+        # handle 0-based index
+        print()
+        choice = input(message)
+
+        if int(choice) <= 0:
+            raise ValueError
+
+        val = choices[int(choice) - 1]
+        return int(choice)
+
+    except (ValueError, IndexError):
+        print(Print.bold(Print.red("\nInvalid choice. Please try again.\n")))
+
+        return list_input(message, choices)

@@ -16,8 +16,9 @@ CONFIG_FILE = "config.json"
 
 
 # TERMINAL COLORS
-class TERMINAL_COLORS():
+class TERMINAL_COLORS:
     ENDC = '\033[0m'
+    RESET = '\033[0m'
 
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'

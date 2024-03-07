@@ -20,20 +20,28 @@ from util.constants import (
     SAVE_GENERATED_DATA_PATH
 )
 
+# Utilities
+from util.print import (
+    bold,
+    error,
+    warning,
+    success,
+    info
+)
+
 
 class Config:
-    loaded: bool = False
-    name: str = ""
-    save_generated_data_path: str = SAVE_GENERATED_DATA_PATH
-    load_genes_at_startup: bool = False
-
-    visualization_engine: str = VISUALIZATION_ENGINES[0]
-
     def __init__(self):
+        self.loaded: bool = False
+        self.name: str = ""
+        self.save_generated_data_path: str = SAVE_GENERATED_DATA_PATH
+        self.load_genes_at_startup: bool = False
+        self.visualization_engine: str = ""
+
         self.init()
 
     def init(self):
-        print(Print.bold(Print.green("Initializing the configuration...")))
+        print(info("Initializing the configuration..."))
 
         if not self.config_exists():
             self.create_config_file()
@@ -44,7 +52,7 @@ class Config:
         self.loaded = True
 
     def create_config_file(self):
-        print(Print.bold(Print.yellow("Creating the configuration file...\n")))
+        print(info("Creating the configuration file...\n"))
 
         # Ask the user for the configuration settings
 
@@ -52,7 +60,7 @@ class Config:
         print(Print.bold(Print.green("\nConfiguration file generated.\n")))
 
     def load_config_file(self):
-        print(Print.bold(Print.yellow("Loading the configuration file...")))
+        print(info("Loading the configuration file..."))
 
         # Read the configuration settings from the configuration file
 
@@ -63,7 +71,7 @@ class Config:
             self.load_genes_at_startup = data["load_genes_at_startup"]
             self.visualization_engine = data["visualization_engine"]
 
-        print(Print.bold(Print.green("Configuration file loaded.\n")))
+        print(success("Configuration file loaded.\n"))
 
     def print_config(self):
         print(Print.bold(Print.cyan("Configuration settings:")))

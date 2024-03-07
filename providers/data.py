@@ -45,17 +45,24 @@ from util.directory_cache import DirectoryCache
 from util.input import Print, user_input
 from util.conversion import byte_to_mb
 
+from util.print import (
+    bold,
+    underline,
+    error,
+    warning,
+    success,
+    info
+)
+
 
 class Data:
-    config: Config = None
-    data_cache: DirectoryCache[DataFrame] = DirectoryCache()
-
     def __init__(self, config=None):
+        self.data_cache = DirectoryCache()
         self.config = config
         self.init()
 
     def init(self):
-        print(Print.bold(Print.yellow("\nInitializing the data pipeline...")))
+        print(info("Initializing the data pipeline..."))
 
         # Load commonly used data into the cache
         self.load_data_recursive(DATA_SETS, self.data_cache)
@@ -64,15 +71,17 @@ class Data:
         # only if the config allows it
 
         if self.config.get_load_genes_at_startup():
-            print(Print.bold(Print.green("\nLoading gene data...\n")))
+            print(info("Loading gene data..."))
             self.load_structure_ids()
             self.load_single_genes()
 
-        print(Print.green(f"Data pipeline initialized with {Print.underline(str(len(self.data_cache)))}" + Print.green(" data sets ") + 
-                          Print.cyan("(" + format(byte_to_mb(self.get_bytes()), '.2f') + " MB)") + "\n"))
+        print(
+            success(f"Data pipeline initialized with {bold(str(len(self.data_cache)))}" + success(" data sets ") +
+                    info("(" + format(byte_to_mb(self.get_bytes()), '.2f') + " MB)") + "\n"))
 
     def run(self):
-        print(Print.bold(Print.green("\nRunning the data pipeline...\n")))
+        print(info("\nRunning the data pipeline..."))
+        print("Welcome to the data pipeline. What would you like to do with our data?")
 
         # Run the data pipeline
 
@@ -263,7 +272,7 @@ class Data:
         print(Print.bold(Print.green(f"\nSaving data set {file_path}...")))
 
         dataset = self.data_cache.get(choice)
-        
+
         save_csv_file(dataset, file_path)
 
         print(Print.bold(Print.green(f"Data set {choice} saved.")))
@@ -313,5 +322,3 @@ class Data:
                 byte_sum += mem_usage.sum()
 
         return byte_sum
-    
-

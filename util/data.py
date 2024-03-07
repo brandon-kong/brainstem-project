@@ -45,7 +45,7 @@ def save_csv_file(data: pd.DataFrame, path: str) -> None:
     # Create the directory if it doesn't exist
     new_path = path.split("/")
     new_path.pop()
-    new_path = "/".join(path)
+    new_path = "/".join(new_path)
     os.makedirs(new_path, exist_ok=True)
 
     data.to_csv(path)
