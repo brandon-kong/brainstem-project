@@ -43,7 +43,11 @@ from util.string_util import get_most_alike_from_list
 
 from util.cache import Cache
 from util.directory_cache import DirectoryCache
-from util.input import user_input
+from util.input import (
+    get_choice_input,
+    get_text_input
+)
+
 from util.conversion import byte_to_mb
 
 from util.print import (
@@ -84,37 +88,45 @@ class Data:
 
     def run(self):
         print(info("Running the data pipeline..."))
-        print(primary("Welcome to the data pipeline. What would you like to do with our data?"))
+        print(primary("Welcome to the data pipeline. What would you like to do with our data?\n"))
 
         # Run the data pipeline
 
-        while True:
-            what_to_do = user_input("list",
-                                    "What would you like to do: ",
-                                    choices=[
-                                        "Generate a new dataset",
-                                        "Load a dataset",
-                                        "Unload a dataset from memory",
-                                        "Save a dataset from memory",
-                                        "List all loaded data",
-                                        "Back"
-                                    ])
+        def generate_new_dataset():
+            DataGenerator(self.config, self).run()
 
-            if what_to_do == 1:
-                DataGenerator(self.config, self).run()
-            elif what_to_do == 2:
-                dataset = self.retrieve_dataset()
-                print(dataset.head())
-            elif what_to_do == 3:
-                self.unload_data_from_memory()
-            elif what_to_do == 4:
-                self.save_data_from_memory()
-            elif what_to_do == 5:
-                self.print_data()
-            elif what_to_do == 6:
+        def load_dataset():
+            dataset = self.retrieve_dataset()
+            print(dataset.head())
+
+        def unload_dataset():
+            self.unload_data_from_memory()
+
+        def save_dataset():
+            self.save_data_from_memory()
+
+        def list_all_loaded_data():
+            self.print_data()
+
+        ans_actions = {
+            "Generate a new dataset": generate_new_dataset,
+            "Load a dataset": load_dataset,
+            "Unload a dataset from memory": unload_dataset,
+            "Save a dataset from memory": save_dataset,
+            "List all loaded data": list_all_loaded_data,
+        }
+        while True:
+            ans_int, ans, did_go_back = get_choice_input("What would you like to do: ",
+                                                         choices=list(ans_actions.keys()),
+                                                         can_go_back=True
+                                                         )
+
+            if did_go_back:
                 break
 
-        print(success("\nData pipeline finished.\n"))
+            ans_actions[ans]()
+
+        print(success("\nData pipeline finished."))
 
     def load_single_genes(self):
         # CORONAL DENSITY GENES
@@ -157,8 +169,9 @@ class Data:
         :return:
         """
 
-        print(info(f"\nData Cache ({format(byte_to_mb(self.get_bytes()), '.2f')} MB):\n"))
+        print(info(f"Data Cache ({format(byte_to_mb(self.get_bytes()), '.2f')} MB):\n"))
         self.print_tree()
+        print()
 
     def retrieve_dataset(self):
         """
@@ -170,7 +183,7 @@ class Data:
         print("Which data set would you like to load?")
         self.print_data()
 
-        choice = user_input("text", "Enter the name of the data set: ")
+        choice = get_text_input("Enter the name of the data set: ")
 
         while not self.data_cache.has(choice) or isinstance(self.data_cache.get(choice), dict):
             # If the data set is not found, try to find the most alike data set
@@ -178,7 +191,7 @@ class Data:
             most_alike = get_most_alike_from_list(choice, all_directories)
             print(error(f"Data set {choice} not found."))
             print(warning(f"Did you mean {most_alike}?"))
-            choice = user_input("text", "Enter the name of the data set: ")
+            choice = get_text_input("Enter the name of the data set: ")
 
         print(info(f"\nLoading data set {choice}..."))
 
@@ -254,7 +267,7 @@ class Data:
         print("Which data set would you like to save?")
         self.print_data()
 
-        choice = user_input("text", "Enter the name of the data set: ")
+        choice = get_text_input("text", "Enter the name of the data set: ")
 
         while not self.data_cache.has(choice) or isinstance(self.data_cache.get(choice), dict):
             # If the data set is not found, try to find the most alike data set
@@ -262,13 +275,13 @@ class Data:
             most_alike = get_most_alike_from_list(choice, all_directories)
             print(error(f"Data set {choice} not found."))
             print(warning(f"Did you mean {most_alike}?"))
-            choice = user_input("text", "Enter the name of the data set: ")
+            choice = get_text_input("Enter the name of the data set: ")
 
-        name_of_file = user_input("text", "Enter the name of the file to save the data set to: ")
+        name_of_file = get_text_input("Enter the name of the file to save the data set to: ")
 
         while name_of_file == "":
             print(error("The name of the file cannot be empty."))
-            name_of_file = user_input("text", "Enter the name of the file to save the data set to: ")
+            name_of_file = get_text_input("Enter the name of the file to save the data set to: ")
 
         file_path = self.config.get_save_generate() + name_of_file + ".csv"
 
@@ -290,7 +303,7 @@ class Data:
         print("Which data set would you like to unload?")
         self.print_data()
 
-        choice = user_input("text", "Enter the name of the data set: ")
+        choice = get_text_input("Enter the name of the data set: ")
 
         while not self.data_cache.has(choice) or isinstance(self.data_cache.get(choice), dict):
             # If the data set is not found, try to find the most alike data set
@@ -298,7 +311,7 @@ class Data:
             most_alike = get_most_alike_from_list(choice, all_directories)
             print(error(f"Data set {choice} not found."))
             print(warning(f"Did you mean {most_alike}?"))
-            choice = user_input("text", "Enter the name of the data set you want to unload: ")
+            choice = get_text_input("Enter the name of the data set you want to unload: ")
 
         print(info(f"\nUnloading data set {choice}..."))
 

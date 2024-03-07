@@ -83,6 +83,7 @@ class Config:
         else:
             # Load the configuration file to get the settings
             self.load_config_file()
+            print(success("Configuration loaded."))
 
         self.loaded = True
 

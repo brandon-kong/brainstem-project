@@ -173,7 +173,7 @@ def get_choice_input(
     """
 
     for i, choice in enumerate(choices):
-        print(info(f"\t{i + 1}. {choice}"))
+        print(info(f"\t[{i + 1}] {choice}"))
 
     if can_go_back:
         print(info(f"\t[{BACK_KEYWORD}] Back"))

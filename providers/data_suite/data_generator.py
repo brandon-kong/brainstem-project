@@ -39,7 +39,7 @@ class DataGenerator:
         self.init()
 
     def init(self):
-        print(info("\nInitializing the data generator..."))
+        print(info("Initializing the data generator..."))
 
         dataset = self.retrieve_dataset()
         print(dataset.head())

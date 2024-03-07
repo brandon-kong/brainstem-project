@@ -34,6 +34,7 @@ def main():
     print(bold(primary("\nWelcome to the Brainstem Orofacial Motor Behaviors program.\n")))
 
     config = Config()
+    print()
     data = Data(config)
 
     # drivers
