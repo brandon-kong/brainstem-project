@@ -32,8 +32,6 @@ def main():
 
     # Add the data driver to the cache because it is always needed
     drivers_cache.set("data", data)
-
-    print(data.data_cache.get('data'))
     
     # Program loop
     while True:        

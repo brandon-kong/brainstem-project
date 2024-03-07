@@ -54,17 +54,13 @@ DATA_SETS = {
     "Coronal": {
         "Density": {
             MASTER_DATASET: "data/parent/[4k]_NewDenCor.csv",
-            "No_NaN": "data/parent/[4k]_DenCor_No_NaN.csv",
         }
     },
-    "Sagittal": {
-        "MASTER":  "data/parent/[4k]_NewDenCor.csv",
-    }
 }
 
 NON_GENE_COLUMNS = ["index", "X", "Y", "Z", "Structure-ID"]
 
-MAX_DIRECTORY_PRINT_DEPTH = 20  # The maximum depth to print the directories in the cache
+MAX_DIRECTORY_PRINT_DEPTH = 10  # The maximum depth to print the directories in the cache
 
 STRUCTURE_IDS = [
     773, 136, 1098, 939, 970, 235, 143, 978, 1107, 852, 661, 307, 1048

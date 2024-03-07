@@ -29,7 +29,6 @@ from util.constants import (
     MAX_DIRECTORY_PRINT_DEPTH,
     MASTER_DATASET,
     STRUCTURE_IDS,
-    SAVE_GENERATED_DATA_PATH
 )
 
 # Utilities
@@ -69,39 +68,41 @@ class Data:
             self.load_structure_ids()
             self.load_single_genes()
 
-        print(Print.bold(
-            Print.green(f"Data pipeline initialized with {Print.underline(str(len(self.data_cache)))} data sets ("
-                        f"{format(byte_to_mb(self.get_bytes()), '.2f')} MB)")))
+        print(Print.green(f"Data pipeline initialized with {Print.underline(str(len(self.data_cache)))}" + Print.green(" data sets ") + 
+                          Print.cyan("(" + format(byte_to_mb(self.get_bytes()), '.2f') + " MB)") + "\n"))
 
     def run(self):
-        print(Print.bold(Print.green("\nRunning the data pipeline...")))
+        print(Print.bold(Print.green("\nRunning the data pipeline...\n")))
 
         # Run the data pipeline
 
-        what_to_do = user_input("list",
-                                "What would you like to do: ",
-                                choices=[
-                                    "Generate a new dataset",
-                                    "Load a dataset",
-                                    "Save a dataset from memory",
-                                    "List all loaded data",
-                                    "Back"
-                                ])
+        while True:
+            what_to_do = user_input("list",
+                                    "What would you like to do: ",
+                                    choices=[
+                                        "Generate a new dataset",
+                                        "Load a dataset",
+                                        "Unload a dataset from memory",
+                                        "Save a dataset from memory",
+                                        "List all loaded data",
+                                        "Back"
+                                    ])
 
-        if what_to_do == 1:
-            DataGenerator(self.config, self).run()
-        elif what_to_do == 2:
-            dataset = self.retrieve_dataset()
-            print(dataset.head())
-        elif what_to_do == 3:
-            self.save_data_from_memory()
-        elif what_to_do == 4:
-            self.print_data()
-        elif what_to_do == 5:
-            return
+            if what_to_do == 1:
+                DataGenerator(self.config, self).run()
+            elif what_to_do == 2:
+                dataset = self.retrieve_dataset()
+                print(dataset.head())
+            elif what_to_do == 3:
+                self.unload_data_from_memory()
+            elif what_to_do == 4:
+                self.save_data_from_memory()
+            elif what_to_do == 5:
+                self.print_data()
+            elif what_to_do == 6:
+                break
 
-        sleep(1)
-        print(Print.bold(Print.green("Data pipeline finished.")))
+        print(Print.bold(Print.green("\nData pipeline finished.\n")))
 
     def load_single_genes(self):
         # CORONAL DENSITY GENES
@@ -144,7 +145,7 @@ class Data:
         :return:
         """
 
-        print(Print.bold(Print.green("\nData Cache:")))
+        print(Print.bold(Print.green(f"\nData Cache ({format(byte_to_mb(self.get_bytes()), '.2f')} MB):")))
         self.print_tree()
 
     def retrieve_dataset(self):
@@ -266,6 +267,33 @@ class Data:
         save_csv_file(dataset, file_path)
 
         print(Print.bold(Print.green(f"Data set {choice} saved.")))
+
+    def unload_data_from_memory(self):
+        """
+        Unload a data set from memory.
+
+        :return:
+        """
+
+        print("Which data set would you like to unload?")
+        self.print_data()
+
+        choice = user_input("text", "Enter the name of the data set: ")
+
+        while not self.data_cache.has(choice) or isinstance(self.data_cache.get(choice), dict):
+            # If the data set is not found, try to find the most alike data set
+            all_directories = self.data_cache.get_all_directories()
+            most_alike = get_most_alike_from_list(choice, all_directories)
+            print(Print.bold(Print.red(f"Data set {choice} not found.")))
+            print(Print.bold(Print.red(f"Did you mean {most_alike}?")))
+            choice = user_input("text", "Enter the name of the data set you want to unload: ")
+
+        print(Print.bold(Print.green(f"\nUnloading data set {choice}...")))
+
+        self.data_cache.remove(choice)
+
+        print(Print.bold(Print.green(f"Data set {choice} unloaded. ("
+                                     f"{format(byte_to_mb(self.get_bytes()), '.2f')} MB)\n")))
 
     def get_bytes(self):
         """
