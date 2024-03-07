@@ -93,14 +93,14 @@ def get_yes_no_input(message: str) -> bool:
     yes_alias = ["yes", "y"]
     no_alias = ["no", "n"]
 
-    print(f"{message} (yes/no): ")
-    choice = input().lower()
+    choice = input(f"{message} (y/n): ").lower()
 
     while choice not in yes_alias + no_alias:
         print(error("Invalid choice. Please try again."))
         choice = input().lower()
 
     return choice in yes_alias
+
 
 def get_text_input(message: str, default=None) -> str:
     """
@@ -111,8 +111,7 @@ def get_text_input(message: str, default=None) -> str:
     :return:
     """
 
-    print(message)
-    choice = input()
+    choice = input(message)
 
     if not choice and default:
         return default
@@ -132,7 +131,7 @@ def get_int_input(message: str) -> int:
     """
 
     print(message)
-    choice = input()
+    choice = input(message)
 
     while not choice.isdigit():
         print(error("Invalid choice. Please try again."))
@@ -173,15 +172,15 @@ def get_choice_input(
     :return:
     """
 
-    print(message)
-
     for i, choice in enumerate(choices):
         print(info(f"\t{i + 1}. {choice}"))
 
     if can_go_back:
         print(info(f"\t[{BACK_KEYWORD}] Back"))
 
-    choice = input()
+    print()
+
+    choice = input(message)
 
     while not choice.isdigit() or int(choice) < 1 or int(choice) > len(choices):
         if choice.lower() == BACK_KEYWORD.lower() and can_go_back:
