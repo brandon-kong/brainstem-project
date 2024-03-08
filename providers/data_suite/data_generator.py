@@ -103,22 +103,8 @@ class DataGenerator:
             print(info("Filtering data by structure ids..."))
 
             valid = True
-            structure_ids = get_comma_separated_int_input("Enter the list of structure ids to keep: ")
-
-            # Ensure that the structure ids are valid
-
-            for structure_id in structure_ids:
-                if structure_id not in STRUCTURE_IDS:
-                    print(error(f"Invalid structure id: {structure_id}"))
-                    valid = False
-
-            while not valid:
-                structure_ids = get_comma_separated_int_input("Enter the list of structure ids to keep: ")
-                valid = True
-                for structure_id in structure_ids:
-                    if structure_id not in STRUCTURE_IDS:
-                        print(error(f"Invalid structure id: {structure_id}"))
-                        valid = False
+            structure_ids = get_comma_separated_int_input("Enter the list of structure ids to keep: ",
+                                                          choices=STRUCTURE_IDS)
 
             # delete rows where its structure id is not in the list
 

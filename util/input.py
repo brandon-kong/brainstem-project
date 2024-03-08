@@ -101,7 +101,8 @@ def get_yes_no_input(message: str) -> bool:
 
     return choice in yes_alias
 
-def get_text_input(message: str, default:Optional[str] = None) -> str:
+
+def get_text_input(message: str, default: Optional[str] = None) -> str:
     """
     Gets input from the user and returns it based on the input type.
 
@@ -122,7 +123,7 @@ def get_text_input(message: str, default:Optional[str] = None) -> str:
     return choice
 
 
-def get_text_input_with_back(message: str, default:Optional[str] = None, can_go_back: bool = True) -> Tuple[str, bool]:
+def get_text_input_with_back(message: str, default: Optional[str] = None, can_go_back: bool = True) -> Tuple[str, bool]:
     """
     Gets input from the user and returns it based on the input type.
 
@@ -144,6 +145,7 @@ def get_text_input_with_back(message: str, default:Optional[str] = None, can_go_
         choice = input(), False
 
     return choice, False
+
 
 def get_int_input(message: str) -> int:
     """
@@ -217,11 +219,14 @@ def get_choice_input(
     return int(choice), choices[int(choice) - 1], choice == BACK_KEYWORD
 
 
-def get_comma_separated_int_input(message: str) -> List[int]:
+def get_comma_separated_int_input(message: str,
+                                  choices: Optional[List[int]] = None) -> List[int]:
     """
     Gets a comma separated integer input from the user and returns it.
 
     :param message:
+    :param choices:
+
     :return:
     """
 
@@ -232,8 +237,27 @@ def get_comma_separated_int_input(message: str) -> List[int]:
     if choice.lower() == BACK_KEYWORD.lower() or choice.lower() in none_list:
         return []
 
-    while not all([x.isdigit() for x in choice.split(",")]):
-        print(error("Invalid choice. Please try again."))
-        choice = input()
+    new_choices = []
 
-    return [int(x) for x in choice.split(",")]
+    while True:
+        try:
+            if not choice:
+                raise ValueError
+
+            if choices:
+                new_choices = [int(x) for x in choice.split(",")]
+
+                for c in choice:
+                    if c not in choices:
+                        raise ValueError
+
+            else:
+                new_choices = [int(x) for x in choice.split(",")]
+
+            break
+
+        except ValueError:
+            print(error("Invalid choice. Please try again."))
+            choice = input()
+
+    return new_choices
