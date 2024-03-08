@@ -10,14 +10,11 @@ Ex: data/parent/[4k]_DenCor_No_NaN: <4.3K x 1465> DataFrame
 
 """
 
-from time import sleep
-from typing import Dict
 
 # Imports
+import os
+from typing import Dict
 from pandas import DataFrame
-
-# Config
-from providers.config import Config
 
 # Drivers
 from providers.data_suite.data_generator import DataGenerator
@@ -27,6 +24,7 @@ from util.cache import Cache
 
 # Constants
 from util.constants import (
+    SAVE_GENERATED_DATA_PATH,
     DATA_SETS,
     MAX_DIRECTORY_PRINT_DEPTH,
     MASTER_DATASET,
@@ -85,6 +83,10 @@ class Data:
             print(info("Loading gene data..."))
             self.load_structure_ids()
             self.load_single_genes()
+
+        if self.config.get('load_generated_data_at_startup'):
+            print(info("Loading generated data..."))
+            self.load_generated_data()
 
         print(
             success(f"Data pipeline initialized with {bold(str(len(self.data_cache)))}" + success(" data sets ") +
@@ -336,6 +338,25 @@ class Data:
 
         print(success(f"Data set {choice} unloaded. ("
                       f"{format(byte_to_mb(self.get_bytes()), '.2f')} MB)\n"))
+
+    def load_generated_data(self):
+        """
+        Load generated data from a file.
+
+        :return:
+        """
+
+        # Walk through the directory and load all the files
+
+        for root, dirs, files in os.walk(self.config.get('save_generated_data_path')):
+            for file in files:
+                if file.endswith(".csv"):
+                    file_path = str(os.path.join(root, file)).replace("\\", "/")
+                    data = get_csv_file(file_path)
+                    new_file_path = file_path.replace(self.config.get('save_generated_data_path'), "")
+                    self.data_cache.set(f"Generated/{new_file_path}", data)
+
+
 
     def get_bytes(self):
         """

@@ -14,7 +14,21 @@ import pandas as pd
 from numpy import bool_
 
 # Utilities
-from util.constants import NON_GENE_COLUMNS
+from util.constants import (
+    NON_GENE_COLUMNS,
+    XYZ_COLUMNS,
+    STRUCTURE_IDS_COLUMN,
+    CLUSTER_LABEL_COLUMN_PREFIX,
+
+    HAS_GENES,
+    HAS_NON_GENES,
+    HAS_XYZ,
+    HAS_STRUCTURE_IDS,
+    CAN_CLUSTER,
+    HAS_NAN,
+    CAN_VISUALIZE,
+    WAYS_TO_VISUALIZE,
+)
 
 
 def get_csv_file(path: str) -> pd.DataFrame | None:
@@ -111,6 +125,7 @@ def contains_non_gene_columns(data: pd.DataFrame) -> bool:
 - Contains indices
 """
 
+
 def contains_nan(data: pd.DataFrame) -> bool_:
     """
     Returns True if the data contains NaN values, otherwise False.
@@ -129,5 +144,57 @@ def contains_xyz_column(data: pd.DataFrame) -> bool:
     :return:
     """
 
-    return ("x" in data.columns and "y" in data.columns and "z" in data.columns) or \
-        ("X" in data.columns and "Y" in data.columns and "Z" in data.columns)
+    return all(column in data.columns for column in XYZ_COLUMNS)
+
+
+def contains_structure_ids_column(data: pd.DataFrame) -> bool:
+    """
+    Returns True if the data contains Structure-IDs, otherwise False
+    :param data:
+    :return:
+    """
+
+    return STRUCTURE_IDS_COLUMN in data.columns
+
+def can_be_clustered_with_kmeans(data: pd.DataFrame) -> bool:
+    """
+    Returns True if the data can be clustered with K-Means, otherwise False
+    :param data:
+    :return:
+    """
+
+    # NAN values cannot be clustered
+    if contains_nan(data):
+        return False
+
+
+
+    return True  # TODO: Implement this
+
+def can_be_visualized(data: pd.DataFrame) -> bool:
+    """
+    Returns True if the data can be visualized, otherwise False
+    :param data:
+    :return:
+    """
+
+    return contains_xyz_column(data)
+
+def ways_to_visualize(data: pd.DataFrame) -> list[str]:
+    """
+    Returns the ways that the data can be visualized
+    :param data:
+    :return:
+    """
+
+    if not can_be_visualized(data):
+        return []
+
+    list_of_ways = ["3D Scatter"]
+
+    # See if any columns start with CLUSTER_LABEL_COLUMN_PREFIX
+    if any(column.startswith(CLUSTER_LABEL_COLUMN_PREFIX) for column in data.columns):
+        list_of_ways.append("3D Scatter with Color")
+
+    return list_of_ways
+

@@ -84,5 +84,15 @@ NON_GENE_COLUMNS = [
     XYZ_COLUMNS[0],
     XYZ_COLUMNS[1],
     XYZ_COLUMNS[2],
-    
 ]
+
+# DATA PROPERTY NAMES
+
+HAS_GENES = "has_genes"
+HAS_NON_GENES = "has_non_genes"
+HAS_XYZ = "has_xyz"
+HAS_STRUCTURE_IDS = "has_structure_ids"
+CAN_CLUSTER = "can_cluster"
+HAS_NAN = "has_nan"
+CAN_VISUALIZE = "can_visualize"
+WAYS_TO_VISUALIZE = "ways_to_visualize"

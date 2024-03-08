@@ -61,8 +61,14 @@ CONFIGURATIONS: dict[
         "type": "list",
         "choices": VISUALIZATION_ENGINES,
         "default": VISUALIZATION_ENGINES[0]
+    },
+    "load_generated_data_at_startup": {
+        "message": "Would you like to load generated data at startup? ",
+        "type": "yes_no",
+        "default": False
     }
 }
+
 
 class Config:
     def __init__(self, config_file: str = CONFIG_FILE):
