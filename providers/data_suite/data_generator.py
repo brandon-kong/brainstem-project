@@ -14,7 +14,7 @@ from util.constants import DATA_SETS
 
 # Utilities
 from util.data import contains_nan
-from util.input import user_input
+from util.input import user_input, get_choice_input, get_text_input_with_back
 from util.string_util import get_most_alike_from_list
 from util.print import (
     error,
@@ -41,31 +41,34 @@ class DataGenerator:
     def init(self):
         print(info("Initializing the data generator..."))
 
-        dataset = self.retrieve_dataset()
-        print(dataset.head())
+        while True:
 
-        # New line for readability
-        print()
+            dataset = self.retrieve_dataset()
 
-        how_to_use_dataset = user_input("list",
-                                        "How would you like to use your dataset: ",
-                                        choices=[
-                                            "Thresholding",
-                                            "Remove columns",
-                                            "Remove rows",
-                                            "Back"
-                                        ])
+            # If the user went back
+            if dataset is None:
+                return
 
-        if how_to_use_dataset == 1:
-            print("Thresholding")
-        elif how_to_use_dataset == 2:
-            print("Remove columns")
-        elif how_to_use_dataset == 3:
-            print("Remove rows")
-        elif how_to_use_dataset == 4:
-            return
+            print(dataset.head())
 
-        print(success(f"Visualizer initialized"))
+            # New line for readability
+            print()
+
+            how_to_use_dataset = get_choice_input("How would you like to use your dataset: ",
+                                            choices=[
+                                                "Thresholding",
+                                                "Remove columns",
+                                                "Remove rows",
+                                            ], can_go_back=True)
+
+            if how_to_use_dataset == 1:
+                print("Thresholding")
+            elif how_to_use_dataset == 2:
+                print("Remove columns")
+            elif how_to_use_dataset == 3:
+                print("Remove rows")
+            elif how_to_use_dataset == 4:
+                return
 
     def run(self):
         print(info("Running the data generator..."))
@@ -94,25 +97,30 @@ class DataGenerator:
         :return:
         """
 
-        print("Which data set would you like to load?")
-        self.data_driver.print_data()
+        while True:
+            print("Which data set would you like to load?")
+            self.data_driver.print_data()
+            
+            choice, did_go_back = get_text_input_with_back("Enter the name of the data set you want to use for generation: ")
 
-        choice = user_input("text", "Enter the name of the data set: ")
+            if did_go_back:
+                return None
 
-        while not self.data_driver.data_cache.has(choice) or isinstance(self.data_driver.data_cache.get(choice), dict):
-            # If the data set is not found, try to find the most alike data set
-            all_directories = self.data_driver.data_cache.get_all_directories()
-            most_alike = get_most_alike_from_list(choice, all_directories)
-            print(error(f"Data set {choice} not found."))
-            print(warning(f"Did you mean {most_alike}?"))
-            choice = user_input("text", "Enter the name of the data set: ")
+            while not self.data_driver.data_cache.has(choice) or isinstance(self.data_driver.data_cache.get(choice), dict):
+                # If the data set is not found, try to find the most alike data set
+                all_directories = self.data_driver.data_cache.get_all_directories()
+                most_alike = get_most_alike_from_list(choice, all_directories)
+                print(error(f"Data set {choice} not found."))
+                print(warning(f"Did you mean {most_alike}?"))
+                choice = user_input("text", "Enter the name of the data set: ")
 
-        print(info(f"\nLoading data set {choice}..."))
+            print(info(f"\nLoading data set {choice}..."))
 
-        dataset = self.data_driver.data_cache.get(choice)
+            dataset = self.data_driver.data_cache.get(choice)
+            
+            # Get properties of the dataset
+            if contains_nan(dataset):
+                print(warning("Warning: ") + underline(warning(choice)) + warning(
+                    " contains NaN values.\n"))
 
-        if contains_nan(dataset):
-            print(warning("Warning: ") + underline(warning(choice)) + warning(
-                " contains NaN values.\n"))
-
-        return self.data_driver.data_cache.get(choice)
+            return self.data_driver.data_cache.get(choice)

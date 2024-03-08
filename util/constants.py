@@ -9,8 +9,6 @@ application.
 # ENGINES
 VISUALIZATION_ENGINES = ["plotly", "matplotlib", "seaborn"]
 
-CLUSTER_LABEL_COLUMN_PREFIX = "Cluster_"
-
 # CONFIG
 CONFIG_FILE = "config.json"
 
@@ -59,8 +57,6 @@ DATA_SETS = {
     },
 }
 
-NON_GENE_COLUMNS = ["index", "X", "Y", "Z", "Structure-ID"]
-
 MAX_DIRECTORY_PRINT_DEPTH = 10  # The maximum depth to print the directories in the cache
 
 STRUCTURE_IDS = [
@@ -70,3 +66,23 @@ STRUCTURE_IDS = [
 SAVE_GENERATED_DATA_PATH = "data/generated/"
 
 BACK_KEYWORD = "back"  # The keyword to go back to the previous menu
+
+# DATA HEADER NAMES
+
+CLUSTER_LABEL_COLUMN_PREFIX = "Cluster_"
+XYZ_COLUMNS = ["X", "Y", "Z"]
+STRUCTURE_IDS_COLUMN = "Structure-ID"
+VOXROWNUM_COLUMN = "voxRowNum"
+
+NON_GENE_COLUMNS = [
+    "Unnamed: 0",
+    "Unnamed: 0.1",
+    "Unnamed: 0.1.1",
+    CLUSTER_LABEL_COLUMN_PREFIX,
+    STRUCTURE_IDS_COLUMN,
+    VOXROWNUM_COLUMN,
+    XYZ_COLUMNS[0],
+    XYZ_COLUMNS[1],
+    XYZ_COLUMNS[2],
+    
+]

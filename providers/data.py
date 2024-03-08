@@ -47,7 +47,8 @@ from util.cache import Cache
 from util.directory_cache import DirectoryCache
 from util.input import (
     get_choice_input,
-    get_text_input
+    get_text_input,
+    get_text_input_with_back
 )
 
 from util.conversion import byte_to_mb
@@ -96,11 +97,13 @@ class Data:
         # Run the data pipeline
 
         def generate_new_dataset():
-            DataGenerator(self.config, self).run()
+            DataGenerator(self.config, self)
 
         def load_dataset():
             dataset = self.retrieve_dataset()
-            print(dataset.head())
+            if dataset is not None:
+                print(dataset.head())
+                print() # New line for readability
 
         def unload_dataset():
             self.unload_data_from_memory()
@@ -188,7 +191,10 @@ class Data:
         print("Which data set would you like to load?")
         self.print_data()
 
-        choice = get_text_input("Enter the name of the data set: ")
+        choice, did_go_back = get_text_input_with_back("Enter the name of the data set: ")
+
+        if did_go_back:
+            return None
 
         while not self.data_cache.has(choice) or isinstance(self.data_cache.get(choice), dict):
             # If the data set is not found, try to find the most alike data set
@@ -272,7 +278,10 @@ class Data:
         print("Which data set would you like to save?")
         self.print_data()
 
-        choice = get_text_input("Enter the name of the data set: ")
+        choice = get_text_input_with_back("Enter the name of the data set: ")
+
+        if choice is None:
+            return None
 
         while not self.data_cache.has(choice) or isinstance(self.data_cache.get(choice), dict):
             # If the data set is not found, try to find the most alike data set
@@ -308,7 +317,10 @@ class Data:
         print("Which data set would you like to unload?")
         self.print_data()
 
-        choice = get_text_input("Enter the path of the data set you want to save: ")
+        choice, did_go_back = get_text_input_with_back("Enter the path of the data set you want to save: ")
+
+        if did_go_back:
+            return None
 
         while not self.data_cache.has(choice) or isinstance(self.data_cache.get(choice), dict):
             # If the data set is not found, try to find the most alike data set

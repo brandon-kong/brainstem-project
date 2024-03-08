@@ -51,39 +51,6 @@ def save_csv_file(data: pd.DataFrame, path: str) -> None:
     data.to_csv(path)
 
 
-def contains_nan(data: pd.DataFrame) -> bool_:
-    """
-    Returns True if the data contains NaN values, otherwise False.
-
-    :param data:
-    :return:
-    """
-
-    return data.isnull().values.any()
-
-
-def contains_xyz_column(data: pd.DataFrame) -> bool:
-    """
-    Returns True if the data contains XYZ coordinates, otherwise False
-    :param data:
-    :return:
-    """
-
-    return ("x" in data.columns and "y" in data.columns and "z" in data.columns) or \
-        ("X" in data.columns and "Y" in data.columns and "Z" in data.columns)
-
-
-def is_gene_data(data: pd.DataFrame) -> bool:
-    """
-    Returns True if the data is gene data, otherwise False.
-
-    :param data:
-    :return:
-    """
-
-    return not contains_xyz_column(data)
-
-
 def column_is_gene_data(column: str) -> bool:
     """
     Returns True if the column is gene data, otherwise False.
@@ -129,3 +96,38 @@ def contains_non_gene_columns(data: pd.DataFrame) -> bool:
 
     return all(column in data.columns for column in NON_GENE_COLUMNS)
 
+
+# Data properties
+
+"""
+- Contains NaN
+- Contains XYZ
+- Contains Structure-IDs
+- Contains Gene Data
+- Can be clustered with K-Means
+- Can be visualized
+- Ways to visualize [3D Scatter, 3D Scatter with Color]
+- Can be quantitatively analyzed
+- Contains indices
+"""
+
+def contains_nan(data: pd.DataFrame) -> bool_:
+    """
+    Returns True if the data contains NaN values, otherwise False.
+
+    :param data:
+    :return:
+    """
+
+    return data.isnull().values.any()
+
+
+def contains_xyz_column(data: pd.DataFrame) -> bool:
+    """
+    Returns True if the data contains XYZ coordinates, otherwise False
+    :param data:
+    :return:
+    """
+
+    return ("x" in data.columns and "y" in data.columns and "z" in data.columns) or \
+        ("X" in data.columns and "Y" in data.columns and "Z" in data.columns)
