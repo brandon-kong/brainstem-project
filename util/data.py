@@ -9,6 +9,8 @@ This includes getting data, writing data, and manipulating data.
 """
 
 # Imports
+from typing import Tuple
+
 import os
 import pandas as pd
 from numpy import bool_
@@ -89,15 +91,23 @@ def combine_data(data: pd.DataFrame, other_data: pd.DataFrame) -> pd.DataFrame:
     return pd.concat([data, other_data], axis=1)
 
 
-def remove_non_gene_columns(data: pd.DataFrame) -> pd.DataFrame:
+def remove_non_gene_columns(data: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
-    Removes non-gene columns from the data.
+    Removes non-gene columns from the data and return the new data along with the removed columns.
 
     :param data:
     :return:
     """
 
-    return data.drop(columns=NON_GENE_COLUMNS)
+    new_data = data.copy()
+    removed_columns = pd.DataFrame()
+
+    for column in NON_GENE_COLUMNS:
+        if column in new_data.columns:
+            new_data = new_data.drop(columns=column)
+            removed_columns[column] = data[column]
+
+    return new_data, removed_columns
 
 
 def contains_non_gene_columns(data: pd.DataFrame) -> bool:
@@ -108,7 +118,7 @@ def contains_non_gene_columns(data: pd.DataFrame) -> bool:
     :return:
     """
 
-    return all(column in data.columns for column in NON_GENE_COLUMNS)
+    return any(column in data.columns for column in NON_GENE_COLUMNS)
 
 
 # Data properties
@@ -167,9 +177,8 @@ def can_be_clustered_with_kmeans(data: pd.DataFrame) -> bool:
     if contains_nan(data):
         return False
 
-
-
     return True  # TODO: Implement this
+
 
 def can_be_visualized(data: pd.DataFrame) -> bool:
     """
@@ -179,6 +188,7 @@ def can_be_visualized(data: pd.DataFrame) -> bool:
     """
 
     return contains_xyz_column(data)
+
 
 def ways_to_visualize(data: pd.DataFrame) -> list[str]:
     """
@@ -198,3 +208,21 @@ def ways_to_visualize(data: pd.DataFrame) -> list[str]:
 
     return list_of_ways
 
+
+def get_data_properties(data: pd.DataFrame) -> dict[str, bool_]:
+    """
+    Returns the properties of the data
+    :param data:
+    :return:
+    """
+
+    return {
+        HAS_GENES: contains_non_gene_columns(data),
+        HAS_NON_GENES: contains_non_gene_columns(data),
+        HAS_XYZ: contains_xyz_column(data),
+        HAS_STRUCTURE_IDS: contains_structure_ids_column(data),
+        CAN_CLUSTER: can_be_clustered_with_kmeans(data),
+        HAS_NAN: contains_nan(data),
+        CAN_VISUALIZE: can_be_visualized(data),
+        WAYS_TO_VISUALIZE: ways_to_visualize(data)
+    }

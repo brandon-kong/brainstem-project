@@ -46,7 +46,8 @@ from util.directory_cache import DirectoryCache
 from util.input import (
     get_choice_input,
     get_text_input,
-    get_text_input_with_back
+    get_text_input_with_back,
+    get_yes_no_input
 )
 
 from util.conversion import byte_to_mb
@@ -353,10 +354,39 @@ class Data:
                 if file.endswith(".csv"):
                     file_path = str(os.path.join(root, file)).replace("\\", "/")
                     data = get_csv_file(file_path)
-                    new_file_path = file_path.replace(self.config.get('save_generated_data_path'), "")
+                    new_file_path = file_path.replace(self.config.get('save_generated_data_path'), "").replace(".csv", "")
                     self.data_cache.set(f"Generated/{new_file_path}", data)
 
+    def ask_to_save_data(self, data: DataFrame):
+        """
+        Ask the user if they want to save the data to a file.
 
+        :param data:
+        :return:
+        """
+
+        ans = get_yes_no_input("Would you like to save the data to a file?")
+
+        if ans:
+            self.save_data_to_memory(data)
+
+    def save_data_to_memory(self, data: DataFrame):
+        """
+        Save the data to the cache.
+
+        :param data:
+        :return:
+        """
+
+        name = get_text_input("Enter the name of the data set: ")
+
+        while name == "":
+            print(error("The name of the data set cannot be empty."))
+            name = get_text_input("Enter the name of the data set: ")
+
+        self.data_cache.set(name, data)
+
+        print(success(f"Data set {name} saved.\n"))
 
     def get_bytes(self):
         """
