@@ -239,25 +239,16 @@ def get_comma_separated_int_input(message: str,
 
     new_choices = []
 
-    while True:
-        try:
-            if not choice:
-                raise ValueError
-
-            if choices:
-                new_choices = [int(x) for x in choice.split(",")]
-
-                for c in choice:
-                    if c not in choices:
-                        raise ValueError
-
-            else:
-                new_choices = [int(x) for x in choice.split(",")]
-
-            break
-
-        except ValueError:
+    for c in choice.split(","):
+        c = c.strip()
+        if c.isdigit():
+            new_choices.append(int(c))
+        else:
             print(error("Invalid choice. Please try again."))
-            choice = input()
+            return get_comma_separated_int_input(message, choices)
+        
+        if choices and int(c) not in choices:
+            print(error("Invalid choice. Please try again."))
+            return get_comma_separated_int_input(message, choices)
 
     return new_choices
