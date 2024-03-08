@@ -121,6 +121,7 @@ def get_text_input(message: str, default:Optional[str] = None) -> str:
 
     return choice
 
+
 def get_text_input_with_back(message: str, default:Optional[str] = None, can_go_back: bool = True) -> Tuple[str, bool]:
     """
     Gets input from the user and returns it based on the input type.
@@ -152,7 +153,6 @@ def get_int_input(message: str) -> int:
     :return:
     """
 
-    print(message)
     choice = input(message)
 
     while not choice.isdigit():
@@ -170,8 +170,7 @@ def get_float_input(message: str) -> float:
     :return:
     """
 
-    print(message)
-    choice = input()
+    choice = input(message)
 
     while not choice.replace(".", "", 1).isdigit():
         print(error("Invalid choice. Please try again."))
@@ -194,6 +193,8 @@ def get_choice_input(
     :return:
     """
 
+    # New line
+    print()
     for i, choice in enumerate(choices):
         print(info(f"\t[{i + 1}] {choice}"))
 
@@ -215,3 +216,24 @@ def get_choice_input(
 
     return int(choice), choices[int(choice) - 1], choice == BACK_KEYWORD
 
+
+def get_comma_separated_int_input(message: str) -> List[int]:
+    """
+    Gets a comma separated integer input from the user and returns it.
+
+    :param message:
+    :return:
+    """
+
+    choice = input(message)
+
+    none_list = ["none", "[]"]
+
+    if choice.lower() == BACK_KEYWORD.lower() or choice.lower() in none_list:
+        return []
+
+    while not all([x.isdigit() for x in choice.split(",")]):
+        print(error("Invalid choice. Please try again."))
+        choice = input()
+
+    return [int(x) for x in choice.split(",")]

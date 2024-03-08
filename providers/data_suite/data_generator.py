@@ -13,18 +13,26 @@ import pandas as pd
 from pandas import DataFrame
 
 # Constants
-from util.constants import DATA_SETS
+from util.constants import (
+STRUCTURE_IDS,
+STRUCTURE_IDS_COLUMN,
+HAS_STRUCTURE_IDS,
+HAS_NAN,
+)
 
 # Utilities
 from util.data import (
     get_data_properties,
     remove_non_gene_columns,
+    combine_data
 )
 
 from util.input import (
     get_choice_input,
     get_text_input_with_back,
-    get_float_input
+    get_float_input,
+    get_yes_no_input,
+    get_comma_separated_int_input
 )
 
 from util.string_util import get_most_alike_from_list
@@ -57,6 +65,7 @@ class DataGenerator:
             print(info("Any columns that have a single value below the threshold will be removed."))
             threshold = get_float_input("Enter the threshold for column reduction: ")
 
+            print(info(f"Threshold set to {threshold}\n"))
             # temporarily remove non-gene columns
             data, removed_columns = remove_non_gene_columns(data)
 
@@ -68,21 +77,63 @@ class DataGenerator:
             should_drop = data.apply(check_below_threshold)
             data = data.drop(columns=should_drop[should_drop].index)
 
+            # re-add the removed columns
+            data = combine_data(removed_columns, data)
+
             print(data.head())
 
             print(success(f"Removed {len(should_drop)} columns"))
 
-            self.data_driver.ask_to_save_data(data)
+            self.data_driver.ask_to_save_data_in_memory(data)
 
         def reduce_rows(data: DataFrame):
             pass
 
-        actions = {
-            "Reduce columns": reduce_columns,
-            "Reduce rows": reduce_rows
-        }
+        def replace_nan(data: DataFrame):
+            replacement_val = get_float_input("What value would you like to replace NaN with?")
+
+            # get the number of nan values
+            nan_count = data.isna().sum().sum()
+
+            data = data.fillna(replacement_val)
+            print(success(f"Replaced {nan_count} NaN values with {replacement_val}"))
+            self.data_driver.ask_to_save_data_in_memory(data)
+
+        def filter_structure_ids(data: DataFrame):
+            print(info("Filtering data by structure ids..."))
+
+            valid = True
+            structure_ids = get_comma_separated_int_input("Enter the list of structure ids to keep: ")
+
+            # Ensure that the structure ids are valid
+
+            for structure_id in structure_ids:
+                if structure_id not in STRUCTURE_IDS:
+                    print(error(f"Invalid structure id: {structure_id}"))
+                    valid = False
+
+            while not valid:
+                structure_ids = get_comma_separated_int_input("Enter the list of structure ids to keep: ")
+                valid = True
+                for structure_id in structure_ids:
+                    if structure_id not in STRUCTURE_IDS:
+                        print(error(f"Invalid structure id: {structure_id}"))
+                        valid = False
+
+            # delete rows where its structure id is not in the list
+
+            data = data[data[STRUCTURE_IDS_COLUMN].isin(structure_ids)]
+            print(data.head())
+            self.data_driver.ask_to_save_data_in_memory(data)
 
         while True:
+            actions = {
+                "Reduce columns": reduce_columns,
+                "Reduce rows": reduce_rows,
+                "Replace NaN": replace_nan,
+                "Filter structure ids": filter_structure_ids,
+            }
+
             dataset = self.retrieve_dataset()
 
             # If the user went back
@@ -91,11 +142,19 @@ class DataGenerator:
 
             print(dataset.head())
 
-            # New line for readability
-            print()
-
             # get the data properties of the dataset
             data_properties = get_data_properties(dataset)
+
+            # if the dataset doesn't have NaN, remove it as an action
+            if not data_properties[HAS_NAN]:
+                actions.pop("Replace NaN")
+
+            if not data_properties[HAS_STRUCTURE_IDS]:
+                actions.pop("Filter structure ids")
+
+            # Decide which actions the user can take with the dataset
+
+
 
             ans_int, ans, did_go_back = get_choice_input("How would you like to use your dataset: ",
                                                          choices=list(actions.keys()), can_go_back=True)
@@ -104,6 +163,11 @@ class DataGenerator:
                 return
 
             actions[ans](dataset)
+
+            do_something_else = get_yes_no_input("Would you like to generate another dataset?")
+
+            if not do_something_else:
+                return
 
     def retrieve_dataset(self) -> DataFrame | None:
         """

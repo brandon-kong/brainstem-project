@@ -91,11 +91,11 @@ class Data:
 
         print(
             success(f"Data pipeline initialized with {bold(str(len(self.data_cache)))}" + success(" data sets ") +
-                    info("(" + format(byte_to_mb(self.get_bytes()), '.2f') + " MB)") + "\n"))
+                    info("(" + format(byte_to_mb(self.get_bytes()), '.2f') + " MB)")))
 
     def run(self):
         print(info("Running the data pipeline..."))
-        print(primary("Welcome to the data pipeline. What would you like to do with our data?\n"))
+        print(primary("Welcome to the data pipeline. What would you like to do with our data?"))
 
         # Run the data pipeline
 
@@ -357,15 +357,15 @@ class Data:
                     new_file_path = file_path.replace(self.config.get('save_generated_data_path'), "").replace(".csv", "")
                     self.data_cache.set(f"Generated/{new_file_path}", data)
 
-    def ask_to_save_data(self, data: DataFrame):
+    def ask_to_save_data_in_memory(self, data: DataFrame):
         """
-        Ask the user if they want to save the data to a file.
+        Ask the user if they want to save the data in memory.
 
         :param data:
         :return:
         """
 
-        ans = get_yes_no_input("Would you like to save the data to a file?")
+        ans = get_yes_no_input("Would you like to save the data to memory?")
 
         if ans:
             self.save_data_to_memory(data)

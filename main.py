@@ -83,9 +83,6 @@ def main():
 
         actions[choice]()
 
-        # New line for readability
-        print()
-
 
 if __name__ == "__main__":
     main()
