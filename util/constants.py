@@ -64,6 +64,22 @@ STRUCTURE_IDS = [
     773, 136, 1098, 939, 970, 235, 143, 978, 1107, 852, 661, 307, 1048
 ]
 
+STRUCTURE_ID_COLORS = {
+    773: "rgb(255, 0, 0)",
+    136: "rgb(0, 255, 0)",
+    1098: "rgb(0, 0, 255)",
+    939: "rgb(255, 255, 0)",
+    970: "rgb(0, 255, 255)",
+    235: "rgb(255, 0, 255)",
+    143: "rgb(192, 192, 192)",
+    978: "rgb(128, 128, 128)",
+    1107: "rgb(128, 0, 0)",
+    852: "rgb(128, 128, 0)",
+    661: "rgb(0, 128, 0)",
+    307: "rgb(0, 128, 128)",
+    1048: "rgb(0, 0, 128)"
+}
+
 SAVE_GENERATED_DATA_PATH = "data/generated/"
 
 BACK_KEYWORD = "back"  # The keyword to go back to the previous menu

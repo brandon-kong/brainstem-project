@@ -11,6 +11,8 @@ from drivers.visualization.visualizer import Visualizer
 
 # Constants
 from util.constants import (
+    STRUCTURE_IDS,
+    STRUCTURE_ID_COLORS,
     STRUCTURE_IDS_COLUMN,
     HAS_XYZ,
     WAYS_TO_VISUALIZE,
@@ -68,11 +70,11 @@ class Plotly(Visualizer):
         """
         print(info("Running the Plotly engine."))
 
-        actions = {
-            "Plot XYZ Coordinates": self.plot_xyz_coordinates
-        }
-
         while True:
+            actions = {
+                "Plot XYZ Coordinates": self.plot_xyz_coordinates
+            }
+
             dataset = self.retrieve_dataset()
 
             if dataset is None:
@@ -86,6 +88,8 @@ class Plotly(Visualizer):
 
             if properties[WAYS_TO_VISUALIZE] and "scatter_clustered" in properties[WAYS_TO_VISUALIZE]:
                 actions["Visualize a CLUSTERED dataset"] = self.visualize_clustered_data
+
+            print(properties)
 
             if properties[HAS_STRUCTURE_IDS]:
                 actions["Color certain Structure IDs"] = self.color_certain_structure_ids
@@ -136,10 +140,10 @@ class Plotly(Visualizer):
 
         print(info("Coloring certain structure ids..."))
 
-        structure_ids = get_comma_separated_int_input("Enter the list of structure ids to color: ")
+        structure_ids = get_comma_separated_int_input("Enter the list of structure ids to color: ", choices=STRUCTURE_IDS)
 
         # Modify the colors and opacity of the dataset
-        dataset['color'] = dataset[STRUCTURE_IDS_COLUMN].apply(lambda x: 'red' if x in structure_ids else 'blue')
+        dataset['color'] = dataset[STRUCTURE_IDS_COLUMN].apply(lambda x: STRUCTURE_ID_COLORS[x] if x in structure_ids else 'blue')
         dataset['opacity'] = dataset[STRUCTURE_IDS_COLUMN].apply(lambda x: 1 if x in structure_ids else 0.2)
 
         fig = go.Figure()
@@ -147,10 +151,11 @@ class Plotly(Visualizer):
         for color, opacity in dataset[['color', 'opacity']].drop_duplicates().values:
             df = dataset[(dataset['color'] == color) & (dataset['opacity'] == opacity)]
             fig.add_trace(go.Scatter3d(x=df['X'], y=df['Y'], z=df['Z'], mode='markers',
+                                       name=f"Structure ID: {df[STRUCTURE_IDS_COLUMN].iloc[0]}",
                                        marker=dict(color=color, opacity=opacity),
                                        hovertemplate='X: %{x}<br>Y: %{y}<br>Z: %{z}<extra>'
-                                                     'Structure ID: %{text} <br/>\n'
-                                                     'Voxel ID: %{customdata}'
+                                                     'Structure ID: %{text} </extra>\n'
+                                                     '<extra>Voxel ID: %{customdata}'
                                                      '</extra>',
                                        text=df[STRUCTURE_IDS_COLUMN],
                                        customdata=df.index
