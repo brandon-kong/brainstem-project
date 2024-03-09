@@ -18,7 +18,7 @@ from util.constants import (
 )
 
 # Utilities
-from util.input import user_input, get_choice_input, get_comma_separated_int_input
+from util.input import user_input, get_choice_input, get_comma_separated_int_input, get_yes_no_input
 
 from util.data import (
     get_data_properties,
@@ -97,6 +97,13 @@ class Plotly(Visualizer):
                 continue
 
             actions[ans](dataset)
+
+            visualize_more = get_yes_no_input("Would you like to visualize more data?")
+
+            if not visualize_more:
+                return
+
+
 
     def plot_xyz_coordinates(self, dataset: DataFrame):
         """
