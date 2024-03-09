@@ -237,6 +237,9 @@ def get_comma_separated_int_input(message: str,
     if choice.lower() == BACK_KEYWORD.lower() or choice.lower() in none_list:
         return []
 
+    if choice.lower() == "all" and choices:
+        return choices
+
     new_choices = []
 
     for c in choice.split(","):

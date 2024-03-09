@@ -15,7 +15,7 @@ from drivers.main import Driver
 from util.constants import VISUALIZATION_ENGINES as ENGINES
 
 # Utilities
-from util.input import user_input
+from util.input import user_input, get_choice_input
 
 from util.print import (
     bold,
@@ -27,11 +27,16 @@ from util.print import (
     info
 )
 
-class Visualizer(Driver):
-    engine: str = ENGINES[0]
+from drivers.visualization.plotly import Plotly
+from drivers.visualization.matplotlib import Matplotlib
 
+
+class Visualizer:
     def __init__(self, config=None, data_driver=None):
-        super().__init__(config, data_driver)
+        self.config = config
+        self.data_driver = data_driver
+        self.engine = config.get('visualization_engine')
+        self.engine_instance: Visualizer | None = None
 
     def init(self):
         print(info("Initializing the visualizer..."))
@@ -43,20 +48,20 @@ class Visualizer(Driver):
 
     def run(self):  
         print(info("Running the visualizer..."))
-        
-        # Run the visualization engine
-        print(f"\nRunning the {self.engine} engine.")
 
-        what_to_do = user_input("list",
-                                "What would you like to do?",
-                                choices=[
-                                    "Visualize a CLUSTERED dataset",
-                                    "Plot XYZ Coordinates",
-                                    "Exit"
-                                ])
+        if self.engine == "plotly":
+            self.engine_instance = Plotly(self)
+        elif self.engine == "matplotlib":
+            self.engine_instance = Matplotlib(self)
+        else:
+            raise ValueError(f"Invalid visualization engine: {self.engine}")
 
-        if what_to_do == 1:
-            print(info("Visualizing a clustered dataset..."))
+        self.engine_instance.run()
         
-        sleep(1)
         print(success("Visualizer finished."))
+
+    def visualize_clustered_data(self):
+        print(info("Visualizing a CLUSTERED dataset..."))
+
+    def plot_xyz_coordinates(self):
+        print(info("Plotting XYZ Coordinates..."))

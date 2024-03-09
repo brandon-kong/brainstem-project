@@ -200,11 +200,11 @@ def ways_to_visualize(data: pd.DataFrame) -> list[str]:
     if not can_be_visualized(data):
         return []
 
-    list_of_ways = ["3D Scatter"]
+    list_of_ways = ["scatter"]
 
     # See if any columns start with CLUSTER_LABEL_COLUMN_PREFIX
     if any(column.startswith(CLUSTER_LABEL_COLUMN_PREFIX) for column in data.columns):
-        list_of_ways.append("3D Scatter with Color")
+        list_of_ways.append("scatter_clustered")
 
     return list_of_ways
 

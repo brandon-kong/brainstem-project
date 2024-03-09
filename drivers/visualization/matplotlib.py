@@ -11,14 +11,12 @@ from drivers.visualization.visualizer import Visualizer
 
 # Constants
 from util.constants import (
-    STRUCTURE_IDS_COLUMN,
     HAS_XYZ,
-    WAYS_TO_VISUALIZE,
-    HAS_STRUCTURE_IDS
+    WAYS_TO_VISUALIZE
 )
 
 # Utilities
-from util.input import user_input, get_choice_input, get_comma_separated_int_input
+from util.input import user_input, get_choice_input
 
 from util.data import (
     get_data_properties,
@@ -34,14 +32,15 @@ from util.print import (
     info
 )
 
-# Plotly
-import plotly.express as px
-import plotly.graph_objects as go
+# Matplotlib
+import matplotlib
+import matplotlib.pyplot as plt
 
+matplotlib.use('TkAgg')
 
-class Plotly(Visualizer):
+class Matplotlib(Visualizer):
     """
-    A class that represents the Plotly visualization engine.
+    A class that represents the Matplotlib visualization engine.
 
     Attributes
     ----------
@@ -64,9 +63,9 @@ class Plotly(Visualizer):
 
     def run(self):
         """
-        Runs the Plotly visualization engine.
+        Runs the Matplotlib visualization engine.
         """
-        print(info("Running the Plotly engine."))
+        print(info("Running the Matplotlib engine."))
 
         actions = {
             "Plot XYZ Coordinates": self.plot_xyz_coordinates
@@ -87,17 +86,13 @@ class Plotly(Visualizer):
             if properties[WAYS_TO_VISUALIZE] and "scatter_clustered" in properties[WAYS_TO_VISUALIZE]:
                 actions["Visualize a CLUSTERED dataset"] = self.visualize_clustered_data
 
-            if properties[HAS_STRUCTURE_IDS]:
-                actions["Color certain Structure IDs"] = self.color_certain_structure_ids
-
             ans_int, ans, did_go_back = get_choice_input("What would you like to do: ",
-                                                         choices=list(actions.keys()), can_go_back=True)
+                                    choices=list(actions.keys()), can_go_back=True)
 
             if did_go_back:
                 continue
 
             actions[ans](dataset)
-
     def plot_xyz_coordinates(self, dataset: DataFrame):
         """
         Plots XYZ coordinates.
@@ -105,8 +100,17 @@ class Plotly(Visualizer):
 
         print(info("Plotting XYZ Coordinates..."))
 
-        fig = px.scatter_3d(dataset, x='X', y='Y', z='Z')
-        fig.show()
+        fig = plt.figure()
+        ax = fig.add_subplot(111, projection='3d')
+
+        ax.scatter(dataset['X'], dataset['Y'], dataset['Z'], c='r', marker='o')
+
+        ax.set_xlabel('X Label')
+        ax.set_ylabel('Y Label')
+        ax.set_zlabel('Z Label')
+
+        plt.show()
+
 
     def visualize_clustered_data(self, dataset: DataFrame):
         """
@@ -120,33 +124,3 @@ class Plotly(Visualizer):
             print(info("Visualizing a CLUSTERED dataset..."))
         else:
             print(error("This dataset cannot be visualized as a clustered dataset."))
-
-    def color_certain_structure_ids(self, dataset: DataFrame):
-        """
-        Colors certain structure ids while keeping the rest the same.
-        :return:
-        """
-
-        print(info("Coloring certain structure ids..."))
-
-        structure_ids = get_comma_separated_int_input("Enter the list of structure ids to color: ")
-
-        # Modify the colors and opacity of the dataset
-        dataset['color'] = dataset[STRUCTURE_IDS_COLUMN].apply(lambda x: 'red' if x in structure_ids else 'blue')
-        dataset['opacity'] = dataset[STRUCTURE_IDS_COLUMN].apply(lambda x: 1 if x in structure_ids else 0.2)
-
-        fig = go.Figure()
-
-        for color, opacity in dataset[['color', 'opacity']].drop_duplicates().values:
-            df = dataset[(dataset['color'] == color) & (dataset['opacity'] == opacity)]
-            fig.add_trace(go.Scatter3d(x=df['X'], y=df['Y'], z=df['Z'], mode='markers',
-                                       marker=dict(color=color, opacity=opacity),
-                                       hovertemplate='X: %{x}<br>Y: %{y}<br>Z: %{z}<extra>'
-                                                     'Structure ID: %{text} <br/>\n'
-                                                     'Voxel ID: %{customdata}'
-                                                     '</extra>',
-                                       text=df[STRUCTURE_IDS_COLUMN],
-                                       customdata=df.index
-                                       ))
-
-        fig.show()

@@ -117,13 +117,22 @@ class Data:
         def list_all_loaded_data():
             self.print_data()
 
+        def import_data():
+            print("Importing data from file...")
+            file_path = get_text_input("Enter the path of the file: ")
+            data = get_csv_file(file_path)
+            if data is not None:
+                self.ask_to_save_data_in_memory(data)
+
         ans_actions = {
             "Generate a new dataset": generate_new_dataset,
             "Load a dataset": load_dataset,
             "Unload a dataset from memory": unload_dataset,
-            "Save a dataset from memory": save_dataset,
+            "Import data from file": import_data,
+            "Save a dataset to file": save_dataset,
             "List all loaded data": list_all_loaded_data,
         }
+
         while True:
             ans_int, ans, did_go_back = get_choice_input("What would you like to do with the data pipeline: ",
                                                          choices=list(ans_actions.keys()),
@@ -194,7 +203,7 @@ class Data:
         print("Which data set would you like to load?")
         self.print_data()
 
-        choice, did_go_back = get_text_input_with_back("Enter the name of the data set: ")
+        choice, did_go_back = get_text_input_with_back("Enter the name of the data set you want to load: ")
 
         if did_go_back:
             return None
@@ -210,10 +219,6 @@ class Data:
         print(info(f"\nLoading data set {choice}..."))
 
         dataset = self.data_cache.get(choice)
-
-        if contains_nan(dataset):
-            print(warning("Warning: ") + underline(warning(choice)) + warning(
-                " contains NaN values.\n"))
 
         return self.data_cache.get(choice)
 

@@ -53,6 +53,7 @@ DATA_SETS = {
     "Coronal": {
         "Density": {
             MASTER_DATASET: "data/parent/[4k]_NewDenCor.csv",
+            "NaN": "data/parent/[4k]_DenCor_NaN.csv",
         }
     },
 }
