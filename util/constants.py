@@ -113,3 +113,7 @@ CAN_CLUSTER = "can_cluster"
 HAS_NAN = "has_nan"
 CAN_VISUALIZE = "can_visualize"
 WAYS_TO_VISUALIZE = "ways_to_visualize"
+
+# KMEANS
+
+KMEANS_SEED = 35

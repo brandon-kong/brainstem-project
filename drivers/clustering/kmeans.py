@@ -4,6 +4,8 @@ visualization/plotly.py
 This module is responsible for providing the Plotly visualization engine for the
 application.
 """
+from typing import List
+
 from pandas import DataFrame
 
 # Imports
@@ -11,13 +13,9 @@ from drivers.clustering.clusterer import Clusterer
 
 # Constants
 from util.constants import (
-    STRUCTURE_IDS,
-    STRUCTURE_ID_COLORS,
-    STRUCTURE_IDS_COLUMN,
-    HAS_XYZ,
-CAN_CLUSTER,
-    WAYS_TO_VISUALIZE,
-    HAS_STRUCTURE_IDS
+    CAN_CLUSTER,
+    CLUSTER_LABEL_COLUMN_PREFIX,
+    KMEANS_SEED
 )
 
 # Utilities
@@ -25,7 +23,8 @@ from util.input import get_choice_input, get_comma_separated_int_input, get_yes_
 
 from util.data import (
     get_data_properties,
-    remove_non_gene_columns
+    remove_non_gene_columns,
+    combine_data
 )
 
 from util.print import (
@@ -33,9 +32,8 @@ from util.print import (
     info
 )
 
-# Plotly
-import plotly.express as px
-import plotly.graph_objects as go
+# SciKit-Learn
+from sklearn.cluster import KMeans as KMeansClusterer
 
 
 class KMeans(Clusterer):
@@ -87,21 +85,39 @@ class KMeans(Clusterer):
             if not cluster_k_values:
                 continue
 
-            wants_to_visualize = get_yes_no_input("Would you like to visualize the clusters?")
+            cluster_k_values.sort()
 
-            for k in cluster_k_values:
-                self.cluster(dataset, k)
+            new_data = self.cluster(dataset, cluster_k_values)
+            new_data = combine_data(removed_columns, new_data)
+
+            print(new_data.head())
+
+            self.data_driver.ask_to_save_data_in_memory(new_data)
 
             cluster_more = get_yes_no_input("Would you like to cluster more data with KMeans?")
 
             if not cluster_more:
                 return
 
-    def cluster(self, data: DataFrame, k: int):
+    def cluster(self, data: DataFrame, ks: List[int]) -> DataFrame:
         """
         Clusters the data using KMeans.
 
         :param data: The data to cluster.
         :param k: The number of clusters to create.
         """
-        print(info(f"Clustering the data using KMeans with k={k}."))
+        new_df = DataFrame()
+
+        for k in ks:
+            kmeans = KMeansClusterer(n_clusters=k, random_state=KMEANS_SEED)
+            labels = kmeans.fit_predict(data)
+
+            print(labels)
+
+            new_df[f"{CLUSTER_LABEL_COLUMN_PREFIX}{k}"] = labels
+
+        # Combine the data
+        data = combine_data(new_df, data)
+
+        return data
+

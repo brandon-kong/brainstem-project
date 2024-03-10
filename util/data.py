@@ -43,7 +43,7 @@ def get_csv_file(path: str) -> pd.DataFrame | None:
     """
 
     try:
-        return pd.read_csv(path, header=0, float_precision='high', index_col=0)
+        return pd.read_csv(path, header=0, float_precision='high', index_col=False)
     except FileNotFoundError:
         print(f"File not found at {path}")
         return None
@@ -64,7 +64,7 @@ def save_csv_file(data: pd.DataFrame, path: str) -> None:
     new_path = "/".join(new_path)
     os.makedirs(new_path, exist_ok=True)
 
-    data.to_csv(path)
+    data.to_csv(path, index=False)
 
 
 def column_is_gene_data(column: str) -> bool:
