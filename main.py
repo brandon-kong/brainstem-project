@@ -16,6 +16,7 @@ from providers.config import Config
 
 # Drivers
 from drivers.visualization.main import Visualizer
+from drivers.clustering.main import Clustering
 from providers.data import Data
 
 # Utilities
@@ -47,7 +48,10 @@ def main():
 
     # Main program functions
     def run_kmeans():
-        print("Running K-Means")
+        if not drivers_cache.has("clustering"):
+            drivers_cache.add("clustering", Clustering(config, data))
+
+        drivers_cache.get("clustering").run()
 
     def run_visualizer():
         if not drivers_cache.has("visualizer"):
