@@ -143,7 +143,7 @@ class Plotly(Visualizer):
         structure_ids = get_comma_separated_int_input("Enter the list of structure ids to color: ", choices=STRUCTURE_IDS)
 
         # Modify the colors and opacity of the dataset
-        dataset['color'] = dataset[STRUCTURE_IDS_COLUMN].apply(lambda x: STRUCTURE_ID_COLORS[x] if x in structure_ids else 'blue')
+        dataset['color'] = dataset[STRUCTURE_IDS_COLUMN].apply(lambda x: STRUCTURE_ID_COLORS[x] if x in structure_ids else 'grey')
         dataset['opacity'] = dataset[STRUCTURE_IDS_COLUMN].apply(lambda x: 1 if x in structure_ids else 0.2)
 
         fig = go.Figure()
@@ -151,7 +151,8 @@ class Plotly(Visualizer):
         for color, opacity in dataset[['color', 'opacity']].drop_duplicates().values:
             df = dataset[(dataset['color'] == color) & (dataset['opacity'] == opacity)]
             fig.add_trace(go.Scatter3d(x=df['X'], y=df['Y'], z=df['Z'], mode='markers',
-                                       name=f"Structure ID: {df[STRUCTURE_IDS_COLUMN].iloc[0]}",
+                                       # name should be the structure id if its in the list, otherwise 'Other'
+                                       name=f"Structure ID: {df[STRUCTURE_IDS_COLUMN].iloc[0] if df[STRUCTURE_IDS_COLUMN].iloc[0] in structure_ids else 'Other'}",
                                        marker=dict(color=color, opacity=opacity),
                                        hovertemplate='X: %{x}<br>Y: %{y}<br>Z: %{z}<extra>'
                                                      'Structure ID: %{text} </extra>\n'
