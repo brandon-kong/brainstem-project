@@ -24,7 +24,8 @@ from util.input import get_choice_input, get_comma_separated_int_input, get_yes_
 from util.data import (
     get_data_properties,
     remove_non_gene_columns,
-    combine_data
+    combine_data,
+    has_1465_rows
 )
 
 from util.print import (
@@ -89,6 +90,13 @@ class KMeans(Clusterer):
 
             new_data = self.cluster(dataset, cluster_k_values)
             new_data = combine_data(removed_columns, new_data)
+
+            if has_1465_rows(new_data):
+                # get NonGeneColumns
+                non_gene_columns = self.data_driver.data_cache.get("NonGeneColumns")
+                if non_gene_columns is not None:
+                    new_data = combine_data(non_gene_columns, new_data)
+
 
             print(new_data.head())
 

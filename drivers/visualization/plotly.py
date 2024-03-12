@@ -16,11 +16,12 @@ from util.constants import (
     STRUCTURE_IDS_COLUMN,
     HAS_XYZ,
     WAYS_TO_VISUALIZE,
-    HAS_STRUCTURE_IDS
+    HAS_STRUCTURE_IDS, CLUSTER_LABEL_COLUMN_PREFIX
 )
 
 # Utilities
 from util.input import user_input, get_choice_input, get_comma_separated_int_input, get_yes_no_input
+from util.colors import generate_k_distinct_colors
 
 from util.data import (
     get_data_properties,
@@ -107,8 +108,6 @@ class Plotly(Visualizer):
             if not visualize_more:
                 return
 
-
-
     def plot_xyz_coordinates(self, dataset: DataFrame):
         """
         Plots XYZ coordinates.
@@ -121,16 +120,31 @@ class Plotly(Visualizer):
 
     def visualize_clustered_data(self, dataset: DataFrame):
         """
-        Visualizes a clustered dataset.
+        Colors cluster labels in the dataset.
         :return:
         """
 
-        properties = get_data_properties(dataset)
+        print(info("Visualizing cluster labels..."))
 
-        if properties[WAYS_TO_VISUALIZE] and "scatter_clustered" in properties[WAYS_TO_VISUALIZE]:
-            print(info("Visualizing a CLUSTERED dataset..."))
-        else:
-            print(error("This dataset cannot be visualized as a clustered dataset."))
+        # get all columns that start with CLUSTER_LABEL_COLUMN_PREFIX
+
+        cluster_label_columns = [column for column in dataset.columns if column.startswith(CLUSTER_LABEL_COLUMN_PREFIX)]
+
+        for cluster_label_column in cluster_label_columns:
+            cluster_label = int(cluster_label_column.split(CLUSTER_LABEL_COLUMN_PREFIX)[1])
+
+            # create a new column for the color of the cluster label
+            dataset['cluster_color'] = dataset[cluster_label_column].apply(lambda x: f"Cluster {x}")
+
+            # sort the dataset by the cluster label
+            dataset = dataset.sort_values(by=cluster_label_column)
+
+            fig = px.scatter_3d(dataset, x='X', y='Y', z='Z', color='cluster_color',
+                                title=f"Cluster labels with K={cluster_label}",
+
+                                )
+
+            fig.show()
 
     def color_certain_structure_ids(self, dataset: DataFrame):
         """
@@ -140,10 +154,12 @@ class Plotly(Visualizer):
 
         print(info("Coloring certain structure ids..."))
 
-        structure_ids = get_comma_separated_int_input("Enter the list of structure ids to color: ", choices=STRUCTURE_IDS)
+        structure_ids = get_comma_separated_int_input("Enter the list of structure ids to color: ",
+                                                      choices=STRUCTURE_IDS)
 
         # Modify the colors and opacity of the dataset
-        dataset['color'] = dataset[STRUCTURE_IDS_COLUMN].apply(lambda x: STRUCTURE_ID_COLORS[x] if x in structure_ids else 'grey')
+        dataset['color'] = dataset[STRUCTURE_IDS_COLUMN].apply(
+            lambda x: STRUCTURE_ID_COLORS[x] if x in structure_ids else 'grey')
         dataset['opacity'] = dataset[STRUCTURE_IDS_COLUMN].apply(lambda x: 1 if x in structure_ids else 0.2)
 
         fig = go.Figure()
@@ -159,7 +175,7 @@ class Plotly(Visualizer):
                                                      '<extra>Voxel ID: %{customdata}'
                                                      '</extra>',
                                        text=df[STRUCTURE_IDS_COLUMN],
-                                       customdata=df.index
+                                       customdata=df.index,
                                        ))
 
         fig.show()

@@ -47,7 +47,7 @@ def get_csv_file(path: str) -> pd.DataFrame | None:
     except FileNotFoundError:
         print(f"File not found at {path}")
         return None
-    
+
 
 def save_csv_file(data: pd.DataFrame, path: str) -> None:
     """
@@ -166,6 +166,7 @@ def contains_structure_ids_column(data: pd.DataFrame) -> bool:
 
     return STRUCTURE_IDS_COLUMN in data.columns
 
+
 def can_be_clustered_with_kmeans(data: pd.DataFrame) -> bool:
     """
     Returns True if the data can be clustered with K-Means, otherwise False
@@ -226,3 +227,13 @@ def get_data_properties(data: pd.DataFrame) -> dict[str, bool_]:
         CAN_VISUALIZE: can_be_visualized(data),
         WAYS_TO_VISUALIZE: ways_to_visualize(data)
     }
+
+
+def has_1465_rows(data: pd.DataFrame) -> bool:
+    """
+    Returns True if the data has 1465 rows, otherwise False
+    :param data:
+    :return:
+    """
+
+    return len(data.index) == 1465
