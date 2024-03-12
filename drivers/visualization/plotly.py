@@ -134,15 +134,26 @@ class Plotly(Visualizer):
             cluster_label = int(cluster_label_column.split(CLUSTER_LABEL_COLUMN_PREFIX)[1])
 
             # create a new column for the color of the cluster label
-            dataset['cluster_color'] = dataset[cluster_label_column].apply(lambda x: f"Cluster {x}")
+            dataset['Cluster ID'] = dataset[cluster_label_column].apply(lambda x: f"{x}")
 
             # sort the dataset by the cluster label
             dataset = dataset.sort_values(by=cluster_label_column)
 
-            fig = px.scatter_3d(dataset, x='X', y='Y', z='Z', color='cluster_color',
+            fig = px.scatter_3d(dataset, x='X', y='Y', z='Z', color='Cluster ID',
                                 title=f"Cluster labels with K={cluster_label}",
+                                custom_data=[dataset.index],
+                                hover_data={'Cluster ID': True, 
+                                            'X': True, 
+                                            'Y': True, 
+                                            'Z': True,
+                                            STRUCTURE_IDS_COLUMN: True,
+                                        },
+                            )
+                            
+                            
 
-                                )
+            
+
 
             fig.show()
 
