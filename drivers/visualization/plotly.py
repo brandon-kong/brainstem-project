@@ -142,11 +142,11 @@ class Plotly(Visualizer):
             fig = px.scatter_3d(dataset, x='X', y='Y', z='Z', color='Cluster ID',
                                 title=f"Cluster labels with K={cluster_label}",
                                 custom_data=[dataset.index],
-                                hover_data={'Cluster ID': True, 
+                                hover_data={'Cluster ID': True,
+                                            STRUCTURE_IDS_COLUMN: True,
                                             'X': True, 
                                             'Y': True, 
-                                            'Z': True,
-                                            STRUCTURE_IDS_COLUMN: True,
+                                            'Z': True
                                         },
                             )
                             
