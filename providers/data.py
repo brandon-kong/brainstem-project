@@ -103,10 +103,7 @@ class Data:
             DataGenerator(self.config, self)
 
         def load_dataset():
-            dataset = self.retrieve_dataset()
-            if dataset is not None:
-                print(dataset.head())
-                print() # New line for readability
+            self.load_data_from_file()
 
         def unload_dataset():
             self.unload_data_from_memory()
@@ -314,6 +311,33 @@ class Data:
         save_csv_file(dataset, file_path)
 
         print(success(f"Data set {choice} saved.\n"))
+
+    def load_data_from_file(self):
+        """
+        Load data from a file into memory.
+
+        :return:
+        """
+
+        print("Which data set would you like to load?")
+
+        choice, did_go_back = get_text_input_with_back("Enter the path of the data set you want to load: ")
+
+        if did_go_back:
+            return None
+
+        if choice is None:
+            return None
+
+        while not os.path.exists(choice):
+            print(error(f"File {choice} not found."))
+            choice = get_text_input("Enter the path of the data set you want to load: ")
+
+        print(info(f"\nLoading data set {choice}..."))
+
+        data = get_csv_file(choice)
+
+        self.ask_to_save_data_in_memory(data)
 
     def unload_data_from_memory(self):
         """

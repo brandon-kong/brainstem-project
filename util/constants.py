@@ -53,8 +53,8 @@ DATA_SETS = {
     "Coronal": {
         "Density": {
             MASTER_DATASET: "data/parent/[4k]_NewDenCor.csv",
-            "NaN": "data/parent/[4k]_DenCor_NaN.csv",
             "output_K1": "data/parent/output_K1.csv",
+            "[70% Edge]": "data/parent/70_edge_voxels.csv",
         }
     },
 }
@@ -96,6 +96,9 @@ NON_GENE_COLUMNS = [
     "Unnamed: 0",
     "Unnamed: 0.1",
     "Unnamed: 0.1.1",
+    "Index",
+    "index",
+    "voxRowNum",
     CLUSTER_LABEL_COLUMN_PREFIX,
     STRUCTURE_IDS_COLUMN,
     VOXROWNUM_COLUMN,
