@@ -108,6 +108,12 @@ class Data:
         def unload_dataset():
             self.unload_data_from_memory()
 
+        def index_two_dataframes():
+            data1 = self.retrieve_dataset()
+            data2 = self.retrieve_dataset()
+            if data1 is not None and data2 is not None:
+                self.index_two_dataframes(data1, data2)
+
         def save_dataset():
             DataSaver(self.config, self).run()
 
@@ -125,6 +131,7 @@ class Data:
             "Generate a new dataset": generate_new_dataset,
             "Load a dataset": load_dataset,
             "Unload a dataset from memory": unload_dataset,
+            "Index two dataframes": index_two_dataframes,
             "Import data from file": import_data,
             "Save a dataset to file": save_dataset,
             "List all loaded data": list_all_loaded_data,
@@ -368,6 +375,56 @@ class Data:
 
         print(success(f"Data set {choice} unloaded. ("
                       f"{format(byte_to_mb(self.get_bytes()), '.2f')} MB)\n"))
+
+    def index_two_dataframes(self, data1: DataFrame, data2: DataFrame) -> tuple[DataFrame, DataFrame] | None:
+        """
+        Index two dataframes by the same index.
+        Create empty rows for the missing indexes.
+
+        :param data1:
+        :param data2:
+        :return:
+        """
+
+        print("First data frame:")
+        print(data1.head())
+
+        first_index_column, did_go_back = get_text_input_with_back("Enter the name of the column to index by: ")
+
+        if did_go_back:
+            return None
+
+        print("Second data frame:")
+        print(data2.head())
+
+        second_index_column, did_go_back = get_text_input_with_back("Enter the name of the column to index by: ")
+
+        if did_go_back:
+            return None
+
+        if first_index_column not in data1.columns or second_index_column not in data2.columns:
+            print(error("The column does not exist in the data frame."))
+            return self.index_two_dataframes(data1, data2)
+
+        data1.set_index(first_index_column, inplace=True)
+        data2.set_index(second_index_column, inplace=True)
+
+        data1, data2 = data1.align(data2, join='outer', axis=0)
+
+        # add the index back as a column
+
+        data1.reset_index(inplace=True)
+        data2.reset_index(inplace=True)
+
+        print("Data frames aligned.")
+        print("First data frame:")
+        print(data1.head())
+        print("Second data frame:")
+        print(data2.head())
+
+        self.ask_to_save_data_in_memory(data2)
+
+        return data1, data2
 
     def load_generated_data(self):
         """

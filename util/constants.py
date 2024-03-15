@@ -54,9 +54,15 @@ DATA_SETS = {
         "Density": {
             MASTER_DATASET: "data/parent/[4k]_NewDenCor.csv",
             "output_K1": "data/parent/output_K1.csv",
+            "output_K1[0.01]": "data/parent/output_K[0.01].csv",
             "[70% Edge]": "data/parent/70_edge_voxels.csv",
         }
     },
+    "Preprocessed": {
+        "Voxels": {
+            "100%": "data/preprocessed/voxel_threshold/100_percent_edge_voxels.csv",
+        }
+    }
 }
 
 MAX_DIRECTORY_PRINT_DEPTH = 10  # The maximum depth to print the directories in the cache
