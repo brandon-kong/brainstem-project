@@ -76,7 +76,7 @@ class Plotly(Visualizer):
                 "Plot XYZ Coordinates": self.plot_xyz_coordinates
             }
 
-            dataset = self.retrieve_dataset()
+            dataset = self.data_driver.retrieve_dataset()
 
             if dataset is None:
                 return

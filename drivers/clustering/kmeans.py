@@ -67,7 +67,7 @@ class KMeans(Clusterer):
         print(info("Running the KMeans engine."))
 
         while True:
-            dataset = self.retrieve_dataset()
+            dataset = self.data_driver.retrieve_dataset()
 
             if dataset is None:
                 return
@@ -119,8 +119,6 @@ class KMeans(Clusterer):
         for k in ks:
             kmeans = KMeansClusterer(n_clusters=k, random_state=KMEANS_SEED)
             labels = kmeans.fit_predict(data)
-
-            print(labels)
 
             new_df[f"{CLUSTER_LABEL_COLUMN_PREFIX}{k}"] = labels
 

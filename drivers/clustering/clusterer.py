@@ -31,37 +31,3 @@ class Clusterer:
 
     def run(self):
         raise NotImplementedError("The run method must be implemented by the subclass.")
-
-    def retrieve_dataset(self) -> DataFrame | None:
-        """
-        Retrieve a dataset from the cache.
-
-        :return:
-        """
-
-        while True:
-            print("Which data set would you like to load?")
-            self.data_driver.print_data()
-
-            choice, did_go_back = get_text_input_with_back(
-                "Enter the name of the data set you want to use for clustering: ")
-
-            if did_go_back:
-                return None
-
-            while not self.data_driver.data_cache.has(choice) or isinstance(self.data_driver.data_cache.get(choice),
-                                                                            dict):
-                # If the data set is not found, try to find the most alike data set
-                all_directories = self.data_driver.data_cache.get_all_directories()
-                most_alike = get_most_alike_from_list(choice, all_directories)
-                print(error(f"Data set {choice} not found."))
-                print(warning(f"Did you mean {most_alike}?"))
-                choice, did_go_back = get_text_input_with_back("Enter the name of the data set: ")
-
-                if did_go_back:
-                    return None
-
-            print(info(f"\nLoading data set {choice}..."))
-
-            dataset = self.data_driver.data_cache.get(choice)
-            return self.data_driver.data_cache.get(choice)

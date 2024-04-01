@@ -197,34 +197,39 @@ class Data:
         horizontal_line()
         print()
 
-    def retrieve_dataset(self):
+    def retrieve_dataset(self) -> DataFrame | None:
         """
         Retrieve a dataset from the cache.
 
         :return:
         """
 
-        print("Which data set would you like to load?")
-        self.print_data()
+        while True:
+            print("Which data set would you like to load?")
+            self.print_data()
 
-        choice, did_go_back = get_text_input_with_back("Enter the name of the data set you want to load: ")
+            choice, did_go_back = get_text_input_with_back(
+                "Enter the name of the data set you want to use: ")
 
-        if did_go_back:
-            return None
+            if did_go_back:
+                return None
 
-        while not self.data_cache.has(choice) or isinstance(self.data_cache.get(choice), dict):
-            # If the data set is not found, try to find the most alike data set
-            all_directories = self.data_cache.get_all_directories()
-            most_alike = get_most_alike_from_list(choice, all_directories)
-            print(error(f"Data set {choice} not found."))
-            print(warning(f"Did you mean {most_alike}?"))
-            choice = get_text_input("Enter the name of the data set: ")
+            while not self.data_cache.has(choice) or isinstance(self.data_cache.get(choice),
+                                                                dict):
+                # If the data set is not found, try to find the most alike data set
+                all_directories = self.data_cache.get_all_directories()
+                most_alike = get_most_alike_from_list(choice, all_directories)
+                print(error(f"Data set {choice} not found."))
+                print(warning(f"Did you mean {most_alike}?"))
+                choice, did_go_back = get_text_input_with_back("Enter the name of the data set: ")
 
-        print(info(f"\nLoading data set {choice}..."))
+                if did_go_back:
+                    return None
 
-        dataset = self.data_cache.get(choice)
+            print(info(f"\nLoading data set {choice}..."))
 
-        return self.data_cache.get(choice)
+            dataset = self.data_cache.get(choice)
+            return dataset
 
     def print_tree(self):
         """

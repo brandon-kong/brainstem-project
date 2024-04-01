@@ -17,6 +17,8 @@ from providers.config import Config
 # Drivers
 from drivers.visualization.main import Visualizer
 from drivers.clustering.main import Clustering
+from drivers.quantitative.main import Quantitative
+
 from providers.data import Data
 
 # Utilities
@@ -59,6 +61,12 @@ def main():
 
         drivers_cache.get("visualizer").run()
 
+    def quantitative_analysis():
+        if not drivers_cache.has("quantitative"):
+            drivers_cache.add("quantitative", Quantitative(config, data))
+
+        drivers_cache.get("quantitative").run()
+
     def update_configs():
         config.create_config_file()
         drivers_cache.clear_except(['data'])
@@ -75,6 +83,7 @@ def main():
             "Perform K-Means": run_kmeans,
             "Open Dataset Suite": data.run,
             "Visualize Data": run_visualizer,
+            "Quantitative Analysis": quantitative_analysis,
             "Update Configurations": update_configs,
             "Exit": exit_program
         }

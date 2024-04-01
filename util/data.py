@@ -22,6 +22,7 @@ from util.constants import (
     STRUCTURE_IDS_COLUMN,
     CLUSTER_LABEL_COLUMN_PREFIX,
 
+    HAS_CLUSTER_IDS,
     HAS_GENES,
     HAS_NON_GENES,
     HAS_XYZ,
@@ -124,6 +125,7 @@ def contains_non_gene_columns(data: pd.DataFrame) -> bool:
 # Data properties
 
 """
+- Contains cluster-IDs
 - Contains NaN
 - Contains XYZ
 - Contains Structure-IDs
@@ -134,6 +136,16 @@ def contains_non_gene_columns(data: pd.DataFrame) -> bool:
 - Can be quantitatively analyzed
 - Contains indices
 """
+
+
+def contains_cluster_ids_column(data: pd.DataFrame) -> bool:
+    """
+    Returns True if the data contains Cluster-IDs, otherwise False
+    :param data:
+    :return:
+    """
+
+    return any(column.startswith(CLUSTER_LABEL_COLUMN_PREFIX) for column in data.columns)
 
 
 def contains_nan(data: pd.DataFrame) -> bool_:
@@ -218,6 +230,7 @@ def get_data_properties(data: pd.DataFrame) -> dict[str, bool_]:
     """
 
     return {
+        HAS_CLUSTER_IDS: contains_cluster_ids_column(data),
         HAS_GENES: contains_non_gene_columns(data),
         HAS_NON_GENES: contains_non_gene_columns(data),
         HAS_XYZ: contains_xyz_column(data),
