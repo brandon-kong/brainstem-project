@@ -1,7 +1,7 @@
 {
     "name": "Brandon",
     "save_generated_data_path": "data/generated/",
-    "load_genes_at_startup": false,
+    "load_genes_at_startup": true,
     "visualization_engine": "plotly",
     "load_generated_data_at_startup": true
 }

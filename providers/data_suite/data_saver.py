@@ -43,20 +43,7 @@ class DataSaver:
     def run(self):
         while True:
             print("Which data set would you like to save?")
-            self.data_driver.print_data()
-
-            choice, did_go_back = get_text_input_with_back("Enter the name of the data set: ")
-
-            if did_go_back:
-                break
-
-            while not self.data_driver.data_cache.has(choice) or isinstance(self.data_driver.data_cache.get(choice), dict):
-                # If the data set is not found, try to find the most alike data set
-                all_directories = self.data_driver.data_cache.get_all_directories()
-                most_alike = get_most_alike_from_list(choice, all_directories)
-                print(error(f"Data set {choice} not found."))
-                print(warning(f"Did you mean {most_alike}?"))
-                choice = get_text_input("Enter the name of the data set: ")
+            dataset = self.data_driver.retrieve_dataset()
 
             name_of_file, did_go_back = get_text_input_with_back("Enter the name of the file to save the data set to: ")
 

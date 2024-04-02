@@ -14,17 +14,14 @@ Ex: data/parent/[4k]_DenCor_No_NaN: <4.3K x 1465> DataFrame
 # Imports
 import os
 from typing import Dict
-from pandas import DataFrame
+from pandas import DataFrame, Series
 
 # Drivers
 from providers.data_suite.data_generator import DataGenerator
 from providers.data_suite.data_saver import DataSaver
 
-from util.cache import Cache
-
 # Constants
 from util.constants import (
-    SAVE_GENERATED_DATA_PATH,
     DATA_SETS,
     MAX_DIRECTORY_PRINT_DEPTH,
     MASTER_DATASET,
@@ -34,7 +31,6 @@ from util.constants import (
 # Utilities
 from util.data import (
     get_csv_file,
-    contains_nan,
     column_is_gene_data,
     save_csv_file
 )
@@ -153,7 +149,7 @@ class Data:
     def load_single_genes(self):
         # CORONAL DENSITY GENES
         cor_density_path = DATA_SETS["Coronal"]["Density"][MASTER_DATASET]
-        cor_density = get_csv_file(cor_density_path)
+        cor_density: DataFrame = get_csv_file(cor_density_path)
 
         # For each column that is a gene, add it to the cache
 
@@ -229,6 +225,14 @@ class Data:
             print(info(f"\nLoading data set {choice}..."))
 
             dataset = self.data_cache.get(choice)
+
+            # Convert to dataframe because it could raise errors
+            if isinstance(dataset, Series):
+                dataset = dataset.to_frame()
+
+            print("Dataset loaded: ")
+            print(dataset.head())
+
             return dataset
 
     def print_tree(self):
@@ -314,7 +318,7 @@ class Data:
             print(error("The name of the file cannot be empty."))
             name_of_file = get_text_input("Enter the name of the file to save the data set to: ")
 
-        file_path = self.config.get('save_generated_data_path') + name_of_file + ".csv"
+        file_path = self.config.get('save_generated_data_path') + name_of_file.replace(".csv", "") + ".csv"
 
         print(info(f"\nSaving data set {file_path}..."))
 
