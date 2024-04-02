@@ -111,7 +111,6 @@ class Matplotlib(Visualizer):
 
         plt.show()
 
-
     def visualize_clustered_data(self, dataset: DataFrame):
         """
         Visualizes a clustered dataset.
