@@ -201,7 +201,6 @@ class Data:
         """
 
         while True:
-            print("Which data set would you like to load?")
             self.print_data()
 
             choice, did_go_back = get_text_input_with_back(
@@ -312,11 +311,14 @@ class Data:
             print(warning(f"Did you mean {most_alike}?"))
             choice = get_text_input("Enter the name of the data set: ")
 
-        name_of_file = get_text_input("Enter the name of the file to save the data set to: ")
+        name_of_file, did_go_back = get_text_input_with_back("Enter the name of the file to save the data set to: ")
 
         while name_of_file == "":
             print(error("The name of the file cannot be empty."))
-            name_of_file = get_text_input("Enter the name of the file to save the data set to: ")
+            name_of_file, did_go_back = get_text_input_with_back("Enter the name of the file to save the data set to: ")
+
+            if did_go_back:
+                return None
 
         file_path = self.config.get('save_generated_data_path') + name_of_file.replace(".csv", "") + ".csv"
 

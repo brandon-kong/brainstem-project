@@ -174,11 +174,12 @@ def get_float_input(message: str) -> float:
 
     choice = input(message)
 
-    while not choice.replace(".", "", 1).isdigit():
-        print(error("Invalid choice. Please try again."))
-        choice = input()
-
-    return float(choice)
+    while True:
+        try:
+            return float(choice)
+        except ValueError:
+            print(error("Invalid choice. Please try again."))
+            choice = input()
 
 
 def get_choice_input(

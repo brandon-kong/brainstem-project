@@ -54,13 +54,13 @@ class DataSaver:
                 print(error("The name of the file cannot be empty."))
                 name_of_file = get_text_input("Enter the name of the file to save the data set to: ")
 
+            name_of_file = name_of_file.replace(" ", "_").replace(".csv", "")
             file_path = self.config.get('save_generated_data_path') + name_of_file + ".csv"
 
             print(info(f"\nSaving data set {file_path}..."))
 
-            dataset = self.data_driver.data_cache.get(choice)
             save_csv_file(dataset, file_path)
-            print(success(f"Data set {choice} saved.\n"))
+            print(success(f"Data set {name_of_file} saved.\n"))
 
             save_another = get_yes_no_input("Would you like to save another data set?")
 

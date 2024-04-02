@@ -62,7 +62,9 @@ DATA_SETS = {
         "Voxels": {
             "100%": "data/preprocessed/voxel_threshold/100_percent_edge_voxels.csv",
             "70%": "data/preprocessed/voxel_threshold/70_percent_edge_voxels.csv",
-
+        },
+        "Genes": {
+            "85%": "data/preprocessed/gene_threshold/85_percent_active_genes.csv",
         }
     }
 }

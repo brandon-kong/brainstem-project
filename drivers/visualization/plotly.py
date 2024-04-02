@@ -90,8 +90,6 @@ class Plotly(Visualizer):
             if properties[WAYS_TO_VISUALIZE] and "scatter_clustered" in properties[WAYS_TO_VISUALIZE]:
                 actions["Visualize a CLUSTERED dataset"] = self.visualize_clustered_data
 
-            print(properties)
-
             if properties[HAS_STRUCTURE_IDS]:
                 actions["Color certain Structure IDs"] = self.color_certain_structure_ids
 
