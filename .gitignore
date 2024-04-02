@@ -6,5 +6,5 @@ __pycache__/
 config.json
 
 data/generated/**
-storage
+storage/
 ```
