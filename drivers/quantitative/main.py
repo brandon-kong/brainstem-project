@@ -40,6 +40,10 @@ from util.data import (
 )
 
 
+def get_all_cluster_id_columns(dataset):
+    return [col for col in dataset.columns if col.startswith(CLUSTER_LABEL_COLUMN_PREFIX)]
+
+
 class Quantitative:
     def __init__(self, config=None, data_driver: Data = None):
         self.config = config
@@ -63,7 +67,7 @@ class Quantitative:
 
             print(info("Analyzing cluster compositions..."))
 
-            cluster_id_columns = self.get_all_cluster_id_columns(dataset_x)
+            cluster_id_columns = get_all_cluster_id_columns(dataset_x)
 
             if len(cluster_id_columns) == 0:
                 print(error("No cluster columns found."))
@@ -118,15 +122,14 @@ class Quantitative:
 
                 new_dataframes.append(new_df)
 
+                print(f"Composition for K = {k}")
                 print(new_df.head())
 
                 self.data_driver.ask_to_save_data_in_memory(new_df)
 
             print(success("Cluster compositions analyzed."))
 
-
         while True:
-
             actions = {}
 
             dataset = self.data_driver.retrieve_dataset()
@@ -154,5 +157,3 @@ class Quantitative:
 
         print(success("Clusterer finished."))
 
-    def get_all_cluster_id_columns(self, dataset):
-        return [col for col in dataset.columns if col.startswith(CLUSTER_LABEL_COLUMN_PREFIX)]

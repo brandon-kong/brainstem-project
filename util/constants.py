@@ -75,6 +75,38 @@ STRUCTURE_IDS = [
     773, 136, 1098, 939, 970, 235, 143, 978, 1107, 852, 661, 307, 1048
 ]
 
+STRUCTURE_ID_NAMES = {
+    773: "Hypoglossal nucleus",
+    136: "Intermediate reticular nucleus",
+    1098: "Medullary reticular nucleus dorsal",
+    939: "Nucleus Ambiguus, dorsal division",
+    970: "Paragigantocellular reticular nucleus dorsal",
+    235: "Lateral reticular nucleus",
+    143: "Nucleus Ambiguus, ventral division",
+    978: "Paragigantocellular reticular nucleus lateral",
+    1107: "Medullary reticular nucleus ventral",
+    852: "Parvocellular reticular nucleus",
+    661: "Facial motor nucleus",
+    307: "Magnocellular reticular nucleus",
+    1048: "Gigantocellular reticular nucleus"
+}
+
+STRUCTURE_ID_ABBREVIATIONS = {
+    773: "XII",
+    136: "IRN",
+    1098: "MDRNd",
+    939: "AMBd",
+    970: "PGRNd",
+    235: "LRN",
+    143: "AMBv",
+    978: "PGRNl",
+    1107: "MDRNv",
+    852: "PARN",
+    661: "VII",
+    307: "MARN",
+    1048: "GRN"
+}
+
 STRUCTURE_ID_COLORS = {
     773: "rgb(255, 0, 0)",
     136: "rgb(0, 255, 0)",
