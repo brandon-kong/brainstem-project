@@ -12,7 +12,7 @@ from drivers.visualization.visualizer import Visualizer
 # Constants
 from util.constants import (
     STRUCTURE_IDS,
-    STRUCTURE_ID_COLORS,
+    STRUCTURE_ID_COLORS_MATPLOTLIB,
     STRUCTURE_IDS_COLUMN,
     HAS_XYZ,
     WAYS_TO_VISUALIZE,
@@ -59,7 +59,11 @@ def color_certain_structure_ids(dataset: DataFrame):
                                                   choices=STRUCTURE_IDS)
 
     # Modify the colors and opacity of the dataset
-    colors = ['r' if sid in input_structure_ids else 'b' for sid in dataset[STRUCTURE_IDS_COLUMN]]
+    colors = [STRUCTURE_ID_COLORS_MATPLOTLIB[sid] if sid in input_structure_ids else 'b' for sid in dataset[STRUCTURE_IDS_COLUMN]]
+
+    # create color map
+
+
 
     fig = plt.figure()
 
@@ -70,7 +74,7 @@ def color_certain_structure_ids(dataset: DataFrame):
 
     ax = fig.add_subplot(111, projection='3d')
     ax.set_title(title)
-    ax.scatter(dataset['X'], dataset['Y'], dataset['Z'], c=colors, marker='o')
+    ax.scatter(dataset['X'], dataset['Y'], dataset['Z'], c=dataset[STRUCTURE_IDS_COLUMN], marker='o')
     plt.show()
 
 
@@ -192,7 +196,11 @@ class Matplotlib(Visualizer):
             ax = fig.add_subplot(111, projection='3d')
             ax.set_title(get_formatted_input(title, options))
 
-            scatter = ax.scatter(dataset['X'], dataset['Y'], dataset['Z'], c=dataset[cluster_label_column], cmap=rainbow, marker='o')
+            ax.set_xlabel('X')
+            ax.set_ylabel('Y')
+            ax.set_zlabel('Z')
+
+            scatter = ax.scatter(dataset['X'], dataset['Y'], dataset['Z'], c=dataset[cluster_label_column], cmap=rainbow, marker='o', alpha=0.6)
 
             fig.colorbar(scatter, ax=ax, label='Cluster ID')
 

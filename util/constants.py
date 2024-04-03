@@ -123,6 +123,22 @@ STRUCTURE_ID_COLORS = {
     1048: "rgb(0, 0, 128)"
 }
 
+STRUCTURE_ID_COLORS_MATPLOTLIB = {
+    773: "red",
+    136: "green",
+    1098: "blue",
+    939: "yellow",
+    970: "cyan",
+    235: "magenta",
+    143: "silver",
+    978: "gray",
+    1107: "maroon",
+    852: "olive",
+    661: "lime",
+    307: "teal",
+    1048: "navy"
+}
+
 SAVE_GENERATED_DATA_PATH = "data/generated/"
 
 BACK_KEYWORD = "back"  # The keyword to go back to the previous menu
