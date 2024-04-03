@@ -20,6 +20,7 @@ from util.constants import (
     HAS_CLUSTER_IDS,
     STRUCTURE_IDS_COLUMN,
     STRUCTURE_IDS,
+    STRUCTURE_ID_ABBREVIATIONS,
 )
 
 # Utilities
@@ -118,7 +119,7 @@ class Quantitative:
                 new_df["Percentage"] = percentages.values()
 
                 for sid in STRUCTURE_IDS:
-                    new_df[sid] = [structure_ids[i][sid] for i in range(0, k)]
+                    new_df[STRUCTURE_ID_ABBREVIATIONS[sid]] = [structure_ids[i][sid] for i in range(0, k)]
 
                 new_dataframes.append(new_df)
 
