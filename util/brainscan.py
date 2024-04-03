@@ -13,8 +13,9 @@ import numpy as np
 # import matplotlib
 # matplotlib.use('TkAgg')
 
+from util.input import get_choice_input
 
-def brainScan():
+def brainScan(df: pd.DataFrame = None):
     """
     Of 4 possible ML_Brainstem data frames (created by PY_MLBrainSurgeon's brainOp() function),
     loads a user-specified frame and performs a categorical/binning analysis.
@@ -23,39 +24,16 @@ def brainScan():
     given data frame's type (DEN vs INT)
     """
 
-    # User greeting:
-    print("Hi Colin! This is brainScan(). \nWhat data frame are we working on today?", "\n")
-    print("1: DEN_Coronal")
-    print("2: INT_Coronal")
-    print("3: DEN_Sagittal")
-    print("4: INT_Sagittal")
-    print("5: OTHER", "\n")
 
-    # Data frame selection
-    try:
-        user_select = int(input("What dataframe?: "))
-    except ValueError:
-        print("Invalid input. Please enter a number, 1 through 4.")
+    choice_int, choice, did_go_back = get_choice_input("What would you like to do: ",
+                                             ["DEN_Coronal", "INT_Coronal", "DEN_Sagittal", "INT_Sagittal", "OTHER"],
+                                             can_go_back=True)
 
-    # Assigning data frame and file path
-    if user_select == 1:
-        filePath = "nu_brain_NewDenC.csv"
-    elif user_select == 2:
-        filePath = "nu_brain_NewIntC.csv"
-    elif user_select == 3:
-        filePath = "nu_brain_NewDenS.csv"
-    elif user_select == 4:
-        filePath = "nu_brain_NewIntS.csv"
-    elif user_select == 5:
-        filePath = input("What data set would you like to analyze?: ")
-    else:
-        print("Invalid option. Please select a number between 1 and 5.")
-
-    # Reading CSV file
-    df = pd.read_csv(filePath, header=1, float_precision='high')
+    if did_go_back:
+        return
 
     # Protocol 1: DENSITY ANALYSIS
-    if user_select in [1, 3, 5]:
+    if choice_int in [1, 3, 5]:
         # Initializing accumulators
         counterList1 = 0  # 0 to 0.000001
         counterList2 = 0  # 0.000001 to 0.00001
@@ -99,7 +77,7 @@ def brainScan():
                     counterList9 += 1
                     pass
 
-        print("\n\n\n-- Binning Analysis --")
+        print("\n-- Binning Analysis --")
         print("\n0 to 0.000001: ", counterList1)
         print("0.000001 to 0.00001: ", counterList2)
         print("0.00001 to 0.0001: ", counterList3)
@@ -135,7 +113,7 @@ def brainScan():
         plt.show()  # Showcasing the generated chart
 
     # Protocol 2: INTENSITY ANALYSIS
-    elif user_select in [2, 4]:
+    elif choice_int in [2, 4]:
         # Generating a histogram
         plt.hist(df.values.flatten(), bins=30, edgecolor='black')
         plt.xlabel('Values')

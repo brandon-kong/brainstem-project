@@ -39,7 +39,8 @@ from util.print import (
 
 # Matplotlib
 import matplotlib
-from matplotlib import colormaps
+from matplotlib import colormaps, colors as mpl_colors
+from matplotlib.colors import ListedColormap
 import matplotlib.pyplot as plt
 
 matplotlib.use('TkAgg')
@@ -61,10 +62,6 @@ def color_certain_structure_ids(dataset: DataFrame):
     # Modify the colors and opacity of the dataset
     colors = [STRUCTURE_ID_COLORS_MATPLOTLIB[sid] if sid in input_structure_ids else 'b' for sid in dataset[STRUCTURE_IDS_COLUMN]]
 
-    # create color map
-
-
-
     fig = plt.figure()
 
     title, did_go_back = get_text_input_with_back("What would you like to title the plot?")
@@ -74,7 +71,13 @@ def color_certain_structure_ids(dataset: DataFrame):
 
     ax = fig.add_subplot(111, projection='3d')
     ax.set_title(title)
-    ax.scatter(dataset['X'], dataset['Y'], dataset['Z'], c=dataset[STRUCTURE_IDS_COLUMN], marker='o')
+
+    # create a new colormap
+    cmap = mpl_colors.LinearSegmentedColormap.from_list("custom", [STRUCTURE_ID_COLORS_MATPLOTLIB[sid] for sid in input_structure_ids])
+
+    ax.scatter(dataset['X'], dataset['Y'], dataset['Z'], c=dataset[STRUCTURE_IDS_COLUMN], cmap=cmap, marker='o')
+
+    fig.colorbar(plt.cm.ScalarMappable(cmap=cmap), ax=ax, label='Structure ID')
     plt.show()
 
 
