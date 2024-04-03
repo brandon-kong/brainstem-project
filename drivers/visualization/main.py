@@ -28,7 +28,7 @@ from util.print import (
 )
 
 from drivers.visualization.plotly import Plotly
-from drivers.visualization.matplotlib import Matplotlib
+from drivers.visualization.matplotlib_viz import Matplotlib
 
 
 class Visualizer:

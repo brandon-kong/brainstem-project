@@ -256,3 +256,19 @@ def get_comma_separated_int_input(message: str,
             return get_comma_separated_int_input(message, choices)
 
     return new_choices
+
+def get_formatted_input(message: str, options: Optional[dict[str, str]]) -> str:
+    """
+    Formats the input message based on data that is injected into the function.
+    Example.) "Cluster {id} has been selected." -> "Cluster 1 has been selected."
+
+    :param message:
+    :param options:
+    :return:
+    """
+
+    if options:
+        for key, value in options.items():
+            message = message.replace(f"{{{key}}}", value)
+
+    return message
