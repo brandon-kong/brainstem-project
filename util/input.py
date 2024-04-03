@@ -11,7 +11,7 @@ the user.
 from typing import Optional, List, Tuple
 
 # Constants
-from util.constants import BACK_KEYWORD
+from util.constants import BACK_KEYWORD, CLUSTER_LABEL_COLUMN_PREFIX
 
 # Utilities
 from util.print import (
@@ -272,3 +272,14 @@ def get_formatted_input(message: str, options: Optional[dict[str, str]]) -> str:
             message = message.replace(f"{{{key}}}", value)
 
     return message
+
+
+def extract_k_value(s: str) -> int:
+    """
+    Extracts the K value from a string.
+
+    :param s:
+    :return:
+    """
+
+    return int(s.split(CLUSTER_LABEL_COLUMN_PREFIX)[1])

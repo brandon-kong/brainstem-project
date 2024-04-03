@@ -47,6 +47,33 @@ matplotlib.use('TkAgg')
 rainbow = colormaps.get_cmap('rainbow')
 
 
+def color_certain_structure_ids(dataset: DataFrame):
+    """
+    Colors certain structure ids while keeping the rest the same.
+    :return:
+    """
+
+    print(info("Coloring certain structure ids..."))
+
+    input_structure_ids = get_comma_separated_int_input("Enter the list of structure ids to color: ",
+                                                  choices=STRUCTURE_IDS)
+
+    # Modify the colors and opacity of the dataset
+    colors = ['r' if sid in input_structure_ids else 'b' for sid in dataset[STRUCTURE_IDS_COLUMN]]
+
+    fig = plt.figure()
+
+    title, did_go_back = get_text_input_with_back("What would you like to title the plot?")
+
+    if did_go_back:
+        return
+
+    ax = fig.add_subplot(111, projection='3d')
+    ax.set_title(title)
+    ax.scatter(dataset['X'], dataset['Y'], dataset['Z'], c=colors, marker='o')
+    plt.show()
+
+
 class Matplotlib(Visualizer):
     """
     A class that represents the Matplotlib visualization engine.
@@ -96,7 +123,7 @@ class Matplotlib(Visualizer):
                 actions["Visualize a CLUSTERED dataset"] = self.visualize_clustered_data
 
             if properties[HAS_STRUCTURE_IDS]:
-                actions["Color certain Structure IDs"] = self.color_certain_structure_ids
+                actions["Color certain Structure IDs"] = color_certain_structure_ids
 
             ans_int, ans, did_go_back = get_choice_input("What would you like to do: ",
                                                          choices=list(actions.keys()), can_go_back=True)
@@ -161,17 +188,6 @@ class Matplotlib(Visualizer):
             # sort the dataset by the cluster label
             dataset = dataset.sort_values(by=cluster_label_column)
 
-            """fig = px.scatter_3d(dataset, x='X', y='Y', z='Z', color='Cluster ID',
-                                title=f"Cluster labels with K={cluster_label}",
-                                custom_data=[dataset.index],
-                                hover_data={'Cluster ID': True,
-                                            STRUCTURE_IDS_COLUMN: True,
-                                            'X': True,
-                                            'Y': True,
-                                            'Z': True
-                                            },
-                                )
-            """
             fig = plt.figure()
             ax = fig.add_subplot(111, projection='3d')
             ax.set_title(get_formatted_input(title, options))
@@ -181,45 +197,3 @@ class Matplotlib(Visualizer):
             fig.colorbar(scatter, ax=ax, label='Cluster ID')
 
             plt.show()
-
-    def color_certain_structure_ids(self, dataset: DataFrame):
-        """
-        Colors certain structure ids while keeping the rest the same.
-        :return:
-        """
-
-        print(info("Coloring certain structure ids..."))
-
-        input_structure_ids = get_comma_separated_int_input("Enter the list of structure ids to color: ",
-                                                      choices=STRUCTURE_IDS)
-
-        # Modify the colors and opacity of the dataset
-        colors = ['r' if sid in input_structure_ids else 'b' for sid in dataset[STRUCTURE_IDS_COLUMN]]
-
-        fig = plt.figure()
-
-        title, did_go_back = get_text_input_with_back("What would you like to title the plot?")
-
-        if did_go_back:
-            return
-
-        """
-        for color, opacity in dataset[['color', 'opacity']].drop_duplicates().values:
-            df = dataset[(dataset['color'] == color) & (dataset['opacity'] == opacity)]
-            fig.add_trace(go.Scatter3d(x=df['X'], y=df['Y'], z=df['Z'], mode='markers',
-                                       # name should be the structure id if its in the list, otherwise 'Other'
-                                       name=f"Structure ID: {df[STRUCTURE_IDS_COLUMN].iloc[0] if df[STRUCTURE_IDS_COLUMN].iloc[0] in structure_ids else 'Other'}",
-                                       marker=dict(color=color, opacity=opacity),
-                                       hovertemplate='X: %{x}<br>Y: %{y}<br>Z: %{z}<extra>'
-                                                     'Structure ID: %{text} </extra>\n'
-                                                     '<extra>Voxel ID: %{customdata}'
-                                                     '</extra>',
-                                       text=df[STRUCTURE_IDS_COLUMN],
-                                       customdata=df.index,
-                                       ))
-        """
-
-        ax = fig.add_subplot(111, projection='3d')
-        ax.set_title(title)
-        ax.scatter(dataset['X'], dataset['Y'], dataset['Z'], c=colors, marker='o')
-        plt.show()
