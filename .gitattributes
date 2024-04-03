@@ -1,3 +1,4 @@
 data/parent/*.csv filter=lfs diff=lfs merge=lfs -text
 data/generated/*.csv filter=lfs diff=lfs merge=lfs -text
 data/preprocessed/**/*.csv filter=lfs diff=lfs merge=lfs -text
+data/shared/**/*.csv filter=lfs diff=lfs merge=lfs -text
