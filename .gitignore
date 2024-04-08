@@ -7,4 +7,5 @@ config.json
 
 data/generated/**
 storage/
-```
+
+.DS_Store
