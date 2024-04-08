@@ -250,3 +250,10 @@ def has_1465_rows(data: pd.DataFrame) -> bool:
     """
 
     return len(data.index) == 1465
+
+
+def get_all_cluster_id_columns(dataset: pd.DataFrame):
+    return [col for col in dataset.columns if col.startswith(CLUSTER_LABEL_COLUMN_PREFIX)]
+
+def extract_k_value(cluster_id_column: str) -> int:
+    return int(cluster_id_column.split(CLUSTER_LABEL_COLUMN_PREFIX)[1])

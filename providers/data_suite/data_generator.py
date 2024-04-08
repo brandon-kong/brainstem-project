@@ -14,17 +14,20 @@ from pandas import DataFrame
 
 # Constants
 from util.constants import (
-STRUCTURE_IDS,
-STRUCTURE_IDS_COLUMN,
-HAS_STRUCTURE_IDS,
-HAS_NAN,
+    STRUCTURE_IDS,
+    STRUCTURE_IDS_COLUMN,
+    HAS_STRUCTURE_IDS,
+    HAS_NAN, HAS_CLUSTER_IDS,
 )
 
 # Utilities
 from util.data import (
     get_data_properties,
     remove_non_gene_columns,
-    combine_data
+    combine_data,
+    get_all_cluster_id_columns,
+    extract_k_value
+
 )
 
 from util.input import (
@@ -89,6 +92,58 @@ class DataGenerator:
         def reduce_rows(data: DataFrame):
             pass
 
+        def remove_cluster_ids_where_voxel_below_threshold(data: DataFrame):
+            print(info("Removing cluster ids where the voxel value is below the threshold..."))
+
+            threshold = get_float_input("Enter the threshold for voxel value: ")
+
+            print(info(f"Threshold set to {threshold}\n"))
+
+            # get the number of rows before filtering
+            num_rows_before = data.shape[0]
+
+            cluster_id_columns = get_all_cluster_id_columns(data)
+
+            # ask the user which cluster id to filter
+
+
+
+
+            self.data_driver.ask_to_save_data_in_memory(data)
+
+        def get_cluster_ids_where_voxel_below_threshold(data: DataFrame):
+            print(info("Getting cluster ids where the voxel value is below the threshold..."))
+
+            threshold = get_float_input("Enter the threshold for voxel value: ")
+
+            print(info(f"Threshold set to {threshold}\n"))
+
+            # get the number of rows before filtering
+            num_rows_before = data.shape[0]
+
+            cluster_id_columns = get_all_cluster_id_columns(data)
+
+            # ask the user which cluster id to filter
+            choice, cluster_id, went_back = get_choice_input("Which cluster id would you like to filter: ",
+                                                       choices=cluster_id_columns, can_go_back=True)\
+
+            if went_back:
+                return
+
+            as_k = extract_k_value(cluster_id)
+
+            # instantiate a dictionary with range 0-k
+            cluster_ids = {i: False for i in range(0, as_k)}
+
+            # get the cluster ids where the voxel value is below the threshold
+            for i in range(0, as_k):
+                cluster_ids[i] = data[data[cluster_id] == i].min() < threshold
+
+            # print the cluster ids where the voxel value is below the threshold
+
+            for cluster_id_x, below_threshold in cluster_ids.items():
+                print(f"Cluster ID: {str(cluster_id_x)} - Below Threshold: {below_threshold}")
+
         def replace_nan(data: DataFrame):
             replacement_val = get_float_input("What value would you like to replace NaN with: ")
 
@@ -118,6 +173,7 @@ class DataGenerator:
                 "Reduce rows": reduce_rows,
                 "Replace NaN": replace_nan,
                 "Filter structure ids": filter_structure_ids,
+                "Get cluster ids where voxel below threshold": get_cluster_ids_where_voxel_below_threshold,
             }
 
             dataset = self.data_driver.retrieve_dataset()
@@ -138,8 +194,10 @@ class DataGenerator:
             if not data_properties[HAS_STRUCTURE_IDS]:
                 actions.pop("Filter structure ids")
 
-            # Decide which actions the user can take with the dataset
+            if not data_properties[HAS_CLUSTER_IDS]:
+                actions.pop("Get cluster ids where voxel below threshold")
 
+            # Decide which actions the user can take with the dataset
 
 
             ans_int, ans, did_go_back = get_choice_input("How would you like to use your dataset: ",

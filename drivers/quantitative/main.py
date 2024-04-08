@@ -40,12 +40,8 @@ from util.brainscan import brainScan
 
 from util.data import (
     get_data_properties,
+    get_all_cluster_id_columns
 )
-
-
-def get_all_cluster_id_columns(dataset):
-    return [col for col in dataset.columns if col.startswith(CLUSTER_LABEL_COLUMN_PREFIX)]
-
 
 class Quantitative:
     def __init__(self, config=None, data_driver: Data = None):
