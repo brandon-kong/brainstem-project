@@ -132,12 +132,22 @@ class DataGenerator:
 
             as_k = extract_k_value(cluster_id)
 
+            # strip the data of non-gene columns
+            data, _ = remove_non_gene_columns(data)
+
+            # add the cluster id column back
+            data[cluster_id] = _[cluster_id]
+
             # instantiate a dictionary with range 0-k
             cluster_ids = {i: False for i in range(0, as_k)}
 
             # get the cluster ids where the voxel value is below the threshold
             for i in range(0, as_k):
-                cluster_ids[i] = data[data[cluster_id] == i].min() < threshold
+                all_columns_below_threshold = data[data[cluster_id] == i].min() < threshold
+                # remove the cluster id column
+                all_columns_below_threshold = all_columns_below_threshold.drop(cluster_id)
+
+                cluster_ids[i] = all_columns_below_threshold.any()
 
             # print the cluster ids where the voxel value is below the threshold
 

@@ -107,6 +107,11 @@ def remove_non_gene_columns(data: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFr
         if column in new_data.columns:
             new_data = new_data.drop(columns=column)
             removed_columns[column] = data[column]
+            
+    # remove cluster ids
+    for column in get_all_cluster_id_columns(new_data):
+        new_data = new_data.drop(columns=column)
+        removed_columns[column] = data[column]
 
     return new_data, removed_columns
 
