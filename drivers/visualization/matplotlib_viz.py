@@ -4,6 +4,7 @@ visualization/matplotlib.py
 This module is responsible for providing the Plotly visualization engine for the
 application.
 """
+from typing import Dict
 from pandas import DataFrame
 
 # Imports
@@ -69,15 +70,30 @@ def color_certain_structure_ids(dataset: DataFrame):
     if did_go_back:
         return
 
+    plots: Dict[str, DataFrame] = {}
+
+    for i in input_structure_ids:
+        # divide plot into structure ids
+        sid_df = dataset[dataset[STRUCTURE_IDS_COLUMN] == i]
+
+        print(sid_df.head())
+        plots[i] = sid_df
+
     ax = fig.add_subplot(111, projection='3d')
     ax.set_title(title)
 
+    for i in plots:
+        key_df = plots[i]
+        ax.plot(key_df['X'], key_df['Y'], key_df['Z'], 'o', label=i)
+
+    plt.legend(loc="upper right")
+
     # create a new colormap
-    cmap = mpl_colors.LinearSegmentedColormap.from_list("custom", [STRUCTURE_ID_COLORS_MATPLOTLIB[sid] for sid in input_structure_ids])
+    # cmap = mpl_colors.LinearSegmentedColormap.from_list("custom", [STRUCTURE_ID_COLORS_MATPLOTLIB[sid] for sid in input_structure_ids])
 
-    ax.scatter(dataset['X'], dataset['Y'], dataset['Z'], c=dataset[STRUCTURE_IDS_COLUMN], cmap=cmap, marker='o')
+    # ax.scatter(dataset['X'], dataset['Y'], dataset['Z'], c=dataset[STRUCTURE_IDS_COLUMN], marker='o')
 
-    fig.colorbar(plt.cm.ScalarMappable(cmap=cmap), ax=ax, label='Structure ID')
+    # fig.colorbar(plt.cm.ScalarMappable(cmap=cmap), ax=ax, label='Structure ID')
     plt.show()
 
 
