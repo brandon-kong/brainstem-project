@@ -113,7 +113,7 @@ class Plotly(Visualizer):
 
         print(info("Plotting XYZ Coordinates..."))
 
-        fig = px.scatter_3d(dataset, x='X', y='Y', z='Z')
+        fig = px.scatter_3d(dataset, x='X', y='Z', z='Y')
         fig.show()
 
     def visualize_clustered_data(self, dataset: DataFrame):
@@ -137,7 +137,7 @@ class Plotly(Visualizer):
             # sort the dataset by the cluster label
             dataset = dataset.sort_values(by=cluster_label_column)
 
-            fig = px.scatter_3d(dataset, x='X', y='Y', z='Z', color='Cluster ID',
+            fig = px.scatter_3d(dataset, x='X', y='Z', z='Y', color='Cluster ID',
                                 title=f"Cluster labels with K={cluster_label}",
                                 custom_data=[dataset.index],
                                 hover_data={'Cluster ID': True,
@@ -175,7 +175,7 @@ class Plotly(Visualizer):
 
         for color, opacity in dataset[['color', 'opacity']].drop_duplicates().values:
             df = dataset[(dataset['color'] == color) & (dataset['opacity'] == opacity)]
-            fig.add_trace(go.Scatter3d(x=df['X'], y=df['Y'], z=df['Z'], mode='markers',
+            fig.add_trace(go.Scatter3d(x=df['X'], y=df['Z'], z=df['Y'], mode='markers',
                                        # name should be the structure id if its in the list, otherwise 'Other'
                                        name=f"Structure ID: {df[STRUCTURE_IDS_COLUMN].iloc[0] if df[STRUCTURE_IDS_COLUMN].iloc[0] in structure_ids else 'Other'}",
                                        marker=dict(color=color, opacity=opacity),
