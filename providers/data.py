@@ -73,6 +73,9 @@ class Data:
         # Load commonly used data into the cache
         self.load_data_recursive(DATA_SETS, self.data_cache)
 
+        # load shared data
+        self.load_shared_data()
+
         # Now that the data is loaded, we can add individual genes into the cache
         # only if the config allows it
 
@@ -165,6 +168,22 @@ class Data:
         for structure in STRUCTURE_IDS:
             isolated_structure = cor_density[cor_density["Structure-ID"] == structure]
             self.data_cache.set(f"Coronal/Density/Structure-IDs/{structure}", isolated_structure)
+
+    def load_shared_data(self):
+        """
+        Load shared data into the cache.
+
+        :return:
+        """
+
+        for root, dirs, files in os.walk('data/shared'):
+            for file in files:
+                if file.endswith(".csv"):
+                    file_path = str(os.path.join(root, file)).replace("\\", "/")
+                    data = get_csv_file(file_path)
+                    new_file_path = file_path.replace('data/shared/', "").replace(".csv",
+                                                                                                               "")
+                    self.data_cache.set(f"Shared/{new_file_path}", data)
 
     def get_all_loaded_data(self):
         return self.data_cache.get_all()
@@ -413,9 +432,11 @@ class Data:
         if did_go_back:
             return None
 
+        """
         if first_index_column not in data1.columns or second_index_column not in data2.columns:
             print(error("The column does not exist in the data frame."))
             return self.index_two_dataframes(data1, data2)
+        """
 
         data1.set_index(first_index_column, inplace=True)
         data2.set_index(second_index_column, inplace=True)
@@ -430,9 +451,9 @@ class Data:
         print("Data frames aligned.")
         print("First data frame:")
         print(data1.head())
+        self.ask_to_save_data_in_memory(data1)
         print("Second data frame:")
         print(data2.head())
-
         self.ask_to_save_data_in_memory(data2)
 
         return data1, data2
