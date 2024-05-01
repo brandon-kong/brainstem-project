@@ -427,6 +427,10 @@ class Data:
         print("Second data frame:")
         print(data2.head())
 
+        # make a copy of both dataframes
+        data1 = data1.copy()
+        data2 = data2.copy()
+
         second_index_column, did_go_back = get_text_input_with_back("Enter the name of the column to index by: ")
 
         if did_go_back:
