@@ -28,6 +28,7 @@ from util.print import (
 )
 
 from drivers.clustering.kmeans import KMeans
+from drivers.clustering.pca import PCA
 
 class Clustering:
     def __init__(self, config=None, data_driver=None):
@@ -55,9 +56,15 @@ class Clustering:
             print(info("Running HAC..."))
             print(success("HAC finished."))
 
+        def pca():
+            pca = PCA(self)
+            pca.run()
+            print(success("PCA finished."))
+
         actions = {
             "KMeans": kmeans,
-            "HAC": hac
+            "HAC": hac,
+            "PCA": pca
         }
 
         while True:

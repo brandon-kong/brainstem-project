@@ -56,6 +56,7 @@ DATA_SETS = {
             "output_K1": "data/parent/output_K1.csv",
             "output_K1[0.01]": "data/parent/output_K[0.01].csv",
             "[70% Edge]": "data/parent/70_edge_voxels.csv",
+            "wakeup": "data/parent/wakeup_NewDenC.csv"
         }
     },
     "Preprocessed": {
