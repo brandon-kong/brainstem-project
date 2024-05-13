@@ -50,7 +50,7 @@ def get_csv_file(path: str) -> pd.DataFrame | None:
         return None
 
 
-def save_csv_file(data: pd.DataFrame, path: str) -> None:
+def save_csv_file(data: pd.DataFrame, path: str, index=True) -> None:
     """
     Saves the data to a csv file at the specified path.
 
@@ -65,7 +65,7 @@ def save_csv_file(data: pd.DataFrame, path: str) -> None:
     new_path = "/".join(new_path)
     os.makedirs(new_path, exist_ok=True)
 
-    data.to_csv(path, index=False)
+    data.to_csv(path, index=index)
 
 
 def column_is_gene_data(column: str) -> bool:

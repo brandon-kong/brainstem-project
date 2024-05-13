@@ -6,6 +6,7 @@ application.
 """
 from typing import List
 
+import numpy as np
 from pandas import DataFrame
 
 # Imports
@@ -83,14 +84,7 @@ class PCA(Clusterer):
                 print(error("This dataset cannot be clustered."))
                 continue
 
-            cluster_k_values = get_comma_separated_int_input("Enter the list of K values to cluster: ")
-
-            if not cluster_k_values:
-                continue
-
-            cluster_k_values.sort()
-
-            new_data = self.cluster(dataset, cluster_k_values)
+            new_data = self.cluster(dataset)
 
             print(new_data)
 
@@ -101,7 +95,7 @@ class PCA(Clusterer):
             if not cluster_more:
                 return
 
-    def cluster(self, data: DataFrame, ks: List[int]) -> DataFrame:
+    def cluster(self, data: DataFrame) -> DataFrame:
         """
         Clusters the data using KMeans.
 
@@ -125,7 +119,30 @@ class PCA(Clusterer):
             columns=['PCA', 'Explained Variance (%)', 'Total Explained Variance (%)']
         ).set_index('PCA').mul(100).round(1)
 
-        print(df.shape)
-        print(df)
+        loadings = pca.components_.T * np.sqrt(pca.explained_variance_)
 
-        return df
+        df_loadings = DataFrame(loadings, columns=[f'PC{i}' for i in range(1, num_components + 1)], index=data.columns)
+
+        print("LOADINGS:")
+        print(df_loadings)
+
+        while True:
+            # ask the user to choose a component to print in descending order
+            print(df)
+
+            indices = list(df.index)
+            choice_num, choice, did_go_back = get_choice_input("Choose a component to print in descending order: ", indices, can_go_back=True)
+
+            if did_go_back:
+                break
+
+            component = "PC" + str(choice)
+
+            if component is None:
+                continue
+
+            print(component)
+
+            print(df_loadings[component].sort_values(ascending=False))
+
+        return df_loadings
