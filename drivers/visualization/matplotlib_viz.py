@@ -128,7 +128,7 @@ class Matplotlib(Visualizer):
 
         while True:
             actions = {
-                "Plot XYZ Coordinates": self.plot_xyz_coordinates
+                "Plot a Histogram": self.histogram
             }
 
             dataset = self.data_driver.retrieve_dataset()
@@ -138,9 +138,8 @@ class Matplotlib(Visualizer):
 
             properties = get_data_properties(dataset)
 
-            if not properties[HAS_XYZ]:
-                print(error("This dataset does not have XYZ coordinates."))
-                continue
+            if properties[HAS_XYZ]:
+                actions["Plot XYZ Coordinates"] = self.plot_xyz_coordinates,
 
             if properties[WAYS_TO_VISUALIZE] and "scatter_clustered" in properties[WAYS_TO_VISUALIZE]:
                 actions["Visualize a CLUSTERED dataset"] = self.visualize_clustered_data
@@ -224,3 +223,31 @@ class Matplotlib(Visualizer):
             fig.colorbar(scatter, ax=ax, label='Cluster ID')
 
             plt.show()
+
+    def histogram (self, dataset: DataFrame):
+        """
+        Plots a histogram of the dataset.
+        """
+
+        print(info("Plotting a histogram..."))
+
+        title, did_go_back = get_text_input_with_back("What would you like to title the plot?")
+
+        if did_go_back:
+            return
+
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+
+        ax.set_title(title)
+
+        # ask what column to plot
+
+        column, back = get_text_input_with_back("Enter the column to plot: ", can_go_back=True)
+
+        if back:
+            return
+
+        ax.hist(dataset[column], color='b', bins=10)
+
+        plt.show()

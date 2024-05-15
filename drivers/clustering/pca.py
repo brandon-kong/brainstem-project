@@ -141,7 +141,9 @@ class PCA(Clusterer):
             if component is None:
                 continue
 
-            one_pc = df_loadings[component].sort_values(ascending=False)
+            one_pc = df_loadings[component].sort_values(ascending=False).to_frame()
+
+            one_pc.hist()
 
             self.data_driver.ask_to_save_data_in_memory(one_pc)
 
