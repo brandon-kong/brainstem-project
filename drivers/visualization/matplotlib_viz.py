@@ -248,6 +248,6 @@ class Matplotlib(Visualizer):
         if back:
             return
 
-        ax.hist(dataset[column], color='b', bins=10)
+        ax.hist(dataset[column], color='b', bins=50, alpha=0.7)
 
         plt.show()

@@ -126,6 +126,26 @@ class PCA(Clusterer):
         print("LOADINGS:")
         print(df_loadings)
 
+        # get the first 10 rows for the first 20 components
+        top20df = DataFrame()
+
+        for i in range(1, 21):
+            print(f"PC{i}")
+
+            loading = df_loadings[f'PC{i}'].sort_values(ascending=False).to_frame()
+            print(loading)
+
+            # get the first 10 rows and the last 10 rows
+            top20df = loading.head(10)
+            #bottom_10 = loading.tail(10)
+
+            #new_df = new_df.append(bottom_10)
+
+            # add it to the new DataFrame
+            print(top20df)
+
+            top20df.to_csv("../data/parent/PCA_Top10.csv")
+
         while True:
             # ask the user to choose a component to print in descending order
             print(df)
@@ -142,8 +162,6 @@ class PCA(Clusterer):
                 continue
 
             one_pc = df_loadings[component].sort_values(ascending=False).to_frame()
-
-            one_pc.hist()
 
             self.data_driver.ask_to_save_data_in_memory(one_pc)
 
