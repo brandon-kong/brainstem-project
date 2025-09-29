@@ -31,6 +31,11 @@ void amba::AmbaClient::Ping()
 
 void amba::AmbaClient::privCopyBaseUrl(const char* pBaseUrl)
 {
+    if (pBaseUrl == nullptr)
+    {
+        return;
+    }
+
     size_t size = std::strlen(pBaseUrl) + 1;
     
     // Copy the string
