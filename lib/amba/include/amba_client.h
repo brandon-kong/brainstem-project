@@ -10,11 +10,14 @@ namespace amba
             AmbaClient(const char *pBaseUrl);
             AmbaClient(const AmbaClient&);
             AmbaClient& operator=(const AmbaClient&);
-            AmbaClient(AmbaClient&&);
-            AmbaClient& operator=(AmbaClient&&);
+            AmbaClient(AmbaClient&&) = delete;
+            AmbaClient& operator=(AmbaClient&&) = delete;
             ~AmbaClient();
 
             void Ping();
+
+        private:
+            void privCopyBaseUrl(const char* pBaseUrl);
 
         private:
             const char* pBaseUrl;
