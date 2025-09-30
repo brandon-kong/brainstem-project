@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include "http/http.h"
 
 class CprTransport : public ITransport
@@ -10,5 +11,5 @@ class CprTransport : public ITransport
         CprTransport& operator=(const CprTransport&) = default;
         ~CprTransport() = default;
 
-        HttpResponse request(HttpMethod method, const char* url, const char* payload = "", const std::unordered_map<const char*, const char*>& headers);
+        HttpResponse request(HttpMethod method, std::string url, std::string payload = "", const std::unordered_map<std::string, std::string>& headers = {});
 };

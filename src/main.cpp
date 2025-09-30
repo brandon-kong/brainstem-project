@@ -1,7 +1,6 @@
-#include "amba_client.h"
+#include "amba_client_v1.h"
 
 void main()
 {
-    amba::AmbaClient pClient("https://api.amba.com/");
-    pClient.Ping();
+    amba::AmbaClientV1 pClient(std::string("https://api.amba.com/"));
 }

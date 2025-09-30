@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <unordered_map>
 
 enum class HttpMethod { GET, POST, PUT, DELETE };
@@ -7,8 +8,8 @@ enum class HttpMethod { GET, POST, PUT, DELETE };
 typedef struct HttpResponse
 {
     int statusCode;
-    const char* body;
-    std::unordered_map<const char*, const char*> headers;
+    std::string body;
+    std::unordered_map<std::string, std::string>& headers;
 } HttpResponse;
 
 class ITransport
@@ -17,8 +18,8 @@ public:
     virtual ~ITransport() = default;
     virtual HttpResponse request(
         HttpMethod method,
-        const char* url, 
-        const char* payload = "",
-        const std::unordered_map<const char*, const char*>& headers = {}
+        std::string url, 
+        std::string payload = "",
+        const std::unordered_map<std::string, std::string>& headers = {}
     ) = 0;
 };

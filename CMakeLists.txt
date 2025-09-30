@@ -3,6 +3,8 @@ project(BrainstemProject)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_subdirectory(lib/amba)
+include_directories(${PROJECT_SOURCE_DIR}/include)
 
+add_subdirectory(lib/amba)
+add_subdirectory(internal/http)
 add_subdirectory(src)

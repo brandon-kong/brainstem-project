@@ -1,52 +1,17 @@
-#include "amba_client.h"
+#include "amba_client_v1.h"
+#include "cpr_transport.h"
+
 #include <iostream>
 #include <cstring>
 
-amba::AmbaClient::AmbaClient(const char* pBaseUrl)
+amba::IAmbaClient::IAmbaClient(std::string& baseUrl) : baseUrl(baseUrl) {}
+
+amba::AmbaClientV1::AmbaClientV1(std::string& baseUrl) : IAmbaClient(baseUrl)
 {
-    this->privCopyBaseUrl(pBaseUrl);
+    this->transport = new CprTransport();
 }
 
-amba::AmbaClient::AmbaClient(const AmbaClient& rClient)
+amba::AmbaClientV1::~AmbaClientV1()
 {
-    this->privCopyBaseUrl(rClient.pBaseUrl);
+    delete this->transport;
 }
-
-amba::AmbaClient& amba::AmbaClient::operator=(const AmbaClient& rClient)
-{
-    if (this != &rClient)
-    {
-        delete this->pBaseUrl;
-        this->privCopyBaseUrl(rClient.pBaseUrl);
-    }
-
-    return *this;
-}
-
-void amba::AmbaClient::Ping()
-{
-    // Ping the endpoints to make sure they are active
-    std::printf("Pinging...\n");
-}
-
-void amba::AmbaClient::privCopyBaseUrl(const char* pBaseUrl)
-{
-    if (pBaseUrl == nullptr)
-    {
-        return;
-    }
-
-    size_t size = std::strlen(pBaseUrl) + 1;
-    
-    // Copy the string
-    char* pBuffer = new char[size];
-    std::strncpy(pBuffer, pBaseUrl, size);
-
-    this->pBaseUrl = pBuffer;
-}
-
-amba::AmbaClient::~AmbaClient()
-{
-    delete this->pBaseUrl;
-}
-
