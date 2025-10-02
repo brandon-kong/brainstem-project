@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
+add_subdirectory(lib/domain)
 add_subdirectory(lib/amba)
 add_subdirectory(internal/http)
 add_subdirectory(src)

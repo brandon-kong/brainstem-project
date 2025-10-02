@@ -1,6 +1,9 @@
-#include "amba_client_v1.h"
+#include "AmbaClientV1.h"
+#include "CprTransport.h"
 
-void main()
+int main()
 {
-    amba::AmbaClientV1 pClient(std::string("https://api.amba.com/"));
+    std::unique_ptr<CprTransport> transport = std::make_unique<CprTransport>();
+    amba::AmbaClientV1 pClient("https://api.brain-map.org/api/v2/", std::move(transport));
+    return 0;
 }
