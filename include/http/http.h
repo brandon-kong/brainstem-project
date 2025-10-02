@@ -16,7 +16,7 @@ class ITransport
 {
 public:
     virtual ~ITransport() = default;
-    virtual HttpResponse request(
+    virtual HttpResponse Request(
         HttpMethod method,
         std::string url, 
         std::string payload = "",

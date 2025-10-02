@@ -4,8 +4,7 @@
 #include <memory>
 #include <string>
 
-// Forward declarations
-class Gene;
+#include "Domain.h"
 
 namespace amba
 {
@@ -21,8 +20,8 @@ namespace amba
             IAmbaClient& operator=(IAmbaClient&&) = delete;
             virtual ~IAmbaClient() = default;
 
-            Gene GetGeneFromId(const int id) const;
-            Gene GetGeneFromAcronym(const std::string& acronym) const;
+            domain::Gene GetGeneFromId(const int id) const;
+            domain::Gene GetGeneFromAcronym(const std::string& acronym) const;
         protected:
             std::unique_ptr<ITransport> transport;
             const std::string baseUrl;

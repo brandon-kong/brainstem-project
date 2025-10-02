@@ -5,5 +5,6 @@ int main()
 {
     std::unique_ptr<CprTransport> transport = std::make_unique<CprTransport>();
     amba::AmbaClientV1 pClient("https://api.brain-map.org/api/v2/", std::move(transport));
+    pClient.GetGeneFromId(0);
     return 0;
 }

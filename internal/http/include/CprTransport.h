@@ -11,5 +11,5 @@ class CprTransport : public ITransport
         CprTransport& operator=(const CprTransport&) = default;
         ~CprTransport() = default;
 
-        HttpResponse request(HttpMethod method, std::string url, std::string payload = "", const std::unordered_map<std::string, std::string>& headers = {});
+        HttpResponse Request(HttpMethod method, std::string url, std::string payload = "", const std::unordered_map<std::string, std::string>& headers = {});
 };
