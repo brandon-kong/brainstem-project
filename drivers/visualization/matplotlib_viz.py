@@ -14,6 +14,7 @@ from drivers.visualization.visualizer import Visualizer
 from util.constants import (
     STRUCTURE_IDS,
     STRUCTURE_ID_COLORS_MATPLOTLIB,
+    STRUCTURE_ID_ABBREVIATIONS,
     STRUCTURE_IDS_COLUMN,
     HAS_XYZ,
     WAYS_TO_VISUALIZE,
@@ -77,7 +78,7 @@ def color_certain_structure_ids(dataset: DataFrame):
         sid_df = dataset[dataset[STRUCTURE_IDS_COLUMN] == i]
 
         print(sid_df.head())
-        plots[i] = sid_df
+        plots[STRUCTURE_ID_ABBREVIATIONS[i]] = sid_df
 
     ax = fig.add_subplot(111, projection='3d')
     ax.set_title(title)
@@ -86,7 +87,7 @@ def color_certain_structure_ids(dataset: DataFrame):
         key_df = plots[i]
         ax.plot(key_df['X'], key_df['Y'], key_df['Z'], 'o', label=i)
 
-    plt.legend(loc="upper right")
+    plt.legend(loc="upper right", bbox_to_anchor=(2, 1))
 
     # create a new colormap
     # cmap = mpl_colors.LinearSegmentedColormap.from_list("custom", [STRUCTURE_ID_COLORS_MATPLOTLIB[sid] for sid in input_structure_ids])
@@ -139,7 +140,7 @@ class Matplotlib(Visualizer):
             properties = get_data_properties(dataset)
 
             if properties[HAS_XYZ]:
-                actions["Plot XYZ Coordinates"] = self.plot_xyz_coordinates,
+                actions["Plot XYZ Coordinates"] = self.plot_xyz_coordinates
 
             if properties[WAYS_TO_VISUALIZE] and "scatter_clustered" in properties[WAYS_TO_VISUALIZE]:
                 actions["Visualize a CLUSTERED dataset"] = self.visualize_clustered_data
@@ -218,7 +219,7 @@ class Matplotlib(Visualizer):
             ax.set_ylabel('Y')
             ax.set_zlabel('Z')
 
-            scatter = ax.scatter(dataset['X'], dataset['Y'], dataset['Z'], c=dataset[cluster_label_column], cmap=rainbow, marker='o', alpha=0.6)
+            scatter = ax.scatter(dataset['X'], dataset['Y'], dataset['Z'], c=dataset[cluster_label_column], cmap=rainbow, marker='o', alpha=0.8)
 
             fig.colorbar(scatter, ax=ax, label='Cluster ID')
 
