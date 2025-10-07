@@ -14,6 +14,7 @@ from drivers.visualization.visualizer import Visualizer
 from util.constants import (
     STRUCTURE_IDS,
     STRUCTURE_ID_COLORS_MATPLOTLIB,
+    STRUCTURE_ID_ABBREVIATIONS,
     STRUCTURE_IDS_COLUMN,
     HAS_XYZ,
     WAYS_TO_VISUALIZE,
@@ -77,7 +78,7 @@ def color_certain_structure_ids(dataset: DataFrame):
         sid_df = dataset[dataset[STRUCTURE_IDS_COLUMN] == i]
 
         print(sid_df.head())
-        plots[i] = sid_df
+        plots[STRUCTURE_ID_ABBREVIATIONS[i]] = sid_df
 
     ax = fig.add_subplot(111, projection='3d')
     ax.set_title(title)
