@@ -139,7 +139,7 @@ class Matplotlib(Visualizer):
             properties = get_data_properties(dataset)
 
             if properties[HAS_XYZ]:
-                actions["Plot XYZ Coordinates"] = self.plot_xyz_coordinates,
+                actions["Plot XYZ Coordinates"] = self.plot_xyz_coordinates
 
             if properties[WAYS_TO_VISUALIZE] and "scatter_clustered" in properties[WAYS_TO_VISUALIZE]:
                 actions["Visualize a CLUSTERED dataset"] = self.visualize_clustered_data
